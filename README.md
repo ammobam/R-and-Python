@@ -1,7 +1,12 @@
-# Python
+# R
+### 210420 ~ 210422
 ------------
-## 파이썬 정리노트
-
-### 1. Numpy
+# Python
+## Python for Data Analysis 2nd
+### 1. 
 ### 2. Pandas
 
+## 파이썬 자료구조 알고리즘
+### 공부자료(https://wikidocs.net/34226)
+#### 1.Singly Linked List
+#### 2.Doubly Linked List
