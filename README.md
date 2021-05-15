@@ -3,7 +3,7 @@
 ------------
 # Python
 ## Python for Data Analysis 2nd
-### 1. 
+### 1. Numpy
 ### 2. Pandas
 
 ## 파이썬 자료구조 알고리즘
