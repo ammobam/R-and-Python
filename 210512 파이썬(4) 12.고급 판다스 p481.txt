@@ -1,0 +1,182 @@
+#-----------------------------------------
+# 12. 고급 판다스
+# 12. Advanced pandas
+
+# 범주형 표기법 !
+# categorical or dictionary-encoded representation
+values = pd.Series([0, 1, 0, 0] * 2)
+    # 범주코드
+dim = pd.Series(['apple', 'orange'])
+    # 범주형 데이터
+    # [0]은 'apple', [1]은 'orange'라는 규칙
+dim.take(values)
+    # 범주형데이터를 범주코드에 적용하여 풀어냄
+        '''
+        0     apple
+        1    orange
+        0     apple
+        0     apple
+        0     apple
+        1    orange
+        0     apple
+        0     apple
+        dtype: object
+        '''
+
+# 12.1.2 pandas의 Categorical
+# p484
+
+## Series를 Categorical로 변경하기
+fruits = ['apple', 'orange', 'apple', 'apple'] * 2
+N = len(fruits)
+df = pd.DataFrame({'fruit': fruits,
+                   'basket_id': np.arange(N),
+                   'count': np.random.randint(3, 15, size=N),
+                   'weight': np.random.uniform(0, 4, size=N)},
+                  columns=['basket_id', 'fruit', 'count', 'weight'])
+
+fruit_cat = df['fruit'].astype('category')
+
+df['fruit']
+    # Name: fruit, dtype: object
+
+c = fruit_cat.values
+    '''
+    pandas의 데이터타입.values
+    type(c) : pandas.core.categorical.Categorical
+    ----------------
+    ['apple', 'orange', 'apple', 'apple', 'apple', 'orange', 'apple', 'apple']
+    Categories (2, object): ['apple', 'orange']
+    '''
+c.categories
+    # Index(['apple', 'orange'], dtype='object')
+c.codes
+    # array([0, 1, 0, 0, 0, 1, 0, 0], dtype=int8)
+
+df['fruit'] = df['fruit'].astype('category')
+df['fruit']
+    # 위 값을 원래 df['fruit'] 객체에 넣어서 카테코리칼로 만들어줌
+    # Name: fruit, dtype: category
+    # Categories (2, object): ['apple', 'orange']
+
+## 처음부터 Categorical 생성하기
+## 방법1)
+my_categories = pd.Categorical(['foo', 'bar', 'baz', 'foo', 'bar'])
+## 방법2) from_codes()
+categories = ['foo', 'bar', 'baz']
+codes = [0, 1, 2, 0, 0, 1]
+my_cats_2 = pd.Categorical.from_codes(codes, categories)
+
+## 순서 지정 1) ordered = True 
+    # 생성
+ordered_cat = pd.Categorical.from_codes(codes, categories,
+                                        ordered = True)
+        '''
+        ['foo', 'bar', 'baz', 'foo', 'foo', 'bar']
+        Categories (3, object): ['foo' < 'bar' < 'baz']
+        -----------------------------------------------
+        'foo' < 'bar' < 'baz'의 순서를 가짐
+        '''
+## 순서 지정 2) as_ordered()
+    # 기존의 categorical에 순서 부여
+my_cats_2.as_ordered()
+        '''
+        ['foo', 'bar', 'baz', 'foo', 'foo', 'bar']
+        Categories (3, object): ['foo' < 'bar' < 'baz']
+        '''
+
+
+#----------------------------------------
+# 12.1.3 Categorical 연산
+# Computations with Categoricals
+# p487 op367
+
+np.random.seed(12345)
+draws = np.random.randn(1000)
+bins = pd.qcut(draws, 4)    # 카테고리 범주 읽기가 힘들다
+bins = pd.qcut(draws, 4, labels=['Q1','Q2','Q3','Q4'])
+        '''
+        라벨부여
+        Categories (4, object): ['Q1' < 'Q2' < 'Q3' < 'Q4']
+        ---------------------------------------------------
+        labels = array or False, default None
+        Used as labels for the resulting bins. 
+        Must be of the same length as the resulting bins. 
+        If False, return only integer indicators of the bins. 
+        If True, raises an error.
+        '''
+
+bins = pd.Series(bins, name='quartile') # bins를 시리즈로 만듬
+results = (pd.Series(draws)
+           .groupby(bins)               # bins 기준으로 groupby 객체 생성
+                                        # bins의 카테고리 그대로
+           .agg(['count','min','max'])  # 연산 적용 # agg는 단일값 내주는 연산
+           .reset_index())              # 다중인덱스를 단일인덱스로 맞춤
+
+#------------------------------
+# categorical의 성능 측정
+# Better performance with categoricals
+# p489 op369
+
+N = 10000000
+draws = pd.Series(np.random.randn(N))
+
+## 사용한 ram을 비교해보자
+labels = pd.Series(['foo', 'bar', 'baz', 'qux'] * (N // 4))
+labels.memory_usage()   # 80000128
+
+categories = labels.astype('category')
+categories.memory_usage()   # 10000320  # category가 ram 적게 쓴다
+
+%time _ = labels.astype('category')     # Wall time: 488 ms
+    # 라벨을 카테고리로 바꾸는 데 걸린 시간도 짧으니 변환해서 쓰자
+
+
+#------------------------------
+# 12.1.4 Categorical 메서드
+# p490 op370
+cat1 = pd.Series(['a', 'b', 'c', 'd'] * 2).astype('category')
+
+# 카테고리타입에 쓸 수 있는 메서드.cat
+cat1.cat.codes
+    # 범주코드 보여줌
+cat1.cat.categories
+    # 범주형 데이터 보여줌
+cat2 = cat1.cat.set_categories(['a','b','c','d','x','y'])
+    # 카테고리 추가 가능
+    # 확인
+    cat1.value_counts()
+    cat2.value_counts()
+    # x, y는 데이터가 0개지만 카테고리에 포함됨
+cat2.cat.remove_unused_categories()
+    # 데이터 없는 카테고리인 x, y는 삭제됨
+
+
+# 원핫 인코딩
+cat1 = pd.Series(['a', 'b', 'c', 'd'] * 2).astype('category')
+pd.get_dummies(cat1)
+        '''
+           a  b  c  d
+        0  1  0  0  0
+        1  0  1  0  0
+        2  0  0  1  0
+        3  0  0  0  1
+        4  1  0  0  0
+        5  0  1  0  0
+        6  0  0  1  0
+        7  0  0  0  1
+        '''
+
+#------------------------------
+# 12.2.1 그룹변환과 GroupBy 객체 풀어내기
+# p494 op373
+'''
+DataFrame에 한번에 여러 함수를 적용하는 방법
+.agg()          # 연산의 결과가 단일한 값으로 나올 때
+.apply()        # 함수
+.transform()    # lambda x:
+'''
+
+# 12.3.1 pipe 메서드
+a = !pip list
+type(a)

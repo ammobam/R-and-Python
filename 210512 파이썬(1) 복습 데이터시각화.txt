@@ -1,0 +1,63 @@
+# 210512
+# 복습
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+x = np.arange(1,6)
+y = 2**x
+plt.plot(x,y)
+plt.show()
+
+
+x= np.linspace(0, 2*np.pi)
+plt.plot(x, np.sin(x))
+plt.plot(x, np.cos(x))
+
+
+df = pd.DataFrame(np.random.randn(100))
+plt.plot(df, 'o')
+df.plot(kind = 'density')
+df.plot(kind = 'kde')
+    # kind = 'kde' : kernel density estimate
+
+
+tips = sns.load_dataset("tips")
+tips.columns
+tips['tip_pct'] = tips.tip / (tips.total_bill-tips.tip)
+    # df.column 오타주의
+
+sns.barplot(x='tip_pct', y='day', data=tips, orient='h')
+    # sns.~plot(x, y, data, option)
+
+sns.barplot(x='day', y='tip_pct', data=tips, hue = 'time')
+sns.barplot(x='day', y='tip_pct', data=tips, color = 'time')
+    # ValueError: Invalid RGBA argument: 'time'
+    # color 옵션이 있으나 RGBA 속성이 없는 그래프는 못 그림
+    # hue 옵션이 자동으로 색상 구분
+
+
+sns.catplot(x='day', y='tip_pct', data=tips[tips.tip_pct<1], hue = 'time', col = 'smoker', kind='bar')
+    # catplot의 경우 열별 그래프 작성 지원
+    # catplot의 디폴트는 점그래프. kind 속성에서 그래프 타입 정해줌.
+    # col은 columns. 자동으로 열별 그래프 그려줌
+
+
+sns.catplot(x='day', y='tip_pct', 
+            data=tips[tips.tip_pct<1],
+            col = 'smoker', kind='bar', row = 'time')
+    # 속성 = '열이름'
+    # p368
+
+sns.catplot(x='day', y='tip_pct', data=tips[tips.tip_pct<1], kind='box')
+
+
+'''
+IQR은 Inter Quatile Range의 약자로 Q1과 Q3의 차이
+박스플롯:
+https://codedragon.tistory.com/7012
+통계:
+https://drhongdatanote.tistory.com/30
+'''
+

@@ -1,0 +1,150 @@
+# 데이터셋 다운
+'''
+https://github.com/Emaasit/pydata-book
+'''
+# 다운 받은 라이브러리 확인
+%pwd
+conda --version     # 버전 확인
+!dir    # ! : console창
+
+a = !pip list   # 라이브러리 목록 보기
+a.grep("fol")   # "fol"가 들어간 목록 찾기
+
+# folium 설치
+!conda install folium
+!pip install folium
+    # 안 되면
+!pip3 install --upgrade pip
+
+#--------------------------------------
+import folium
+
+# 서울지도 객체에 저장하기
+seoul_map = folium.Map(location=[37.55, 126.9], zoom_start=12)
+'''
+It seems folium generates web based maps, and those can't be rendered by Spyder. 
+Spyder는 folium map을 띄우는 기능 없으므로
+저장해서 html로 열던지
+주피터 랩 쓰기
+'''
+
+# 서울 내 대학교 위도 및 경도 자료 불러오기
+import pandas as pd
+df = pd.read_excel('서울지역대학교위치.xlsx')
+    # df = pd.read_excel('C:/Users/admin/Pydata/서울지역대학교위치.xlsx')
+
+# seoul_map 객체에 폴리움 마커로 위도, 경도 표시하기
+for name, lat, lng in zip(df.대학교, df.위도, df.경도):
+    folium.Marker([lat, lng], popup=name).add_to(seoul_map)
+
+## tooltip으로 하면 마우스 오버레이 시 학교이름 가로로 뜬다
+for name, lat, lng in zip(df.대학교, df.위도, df.경도):
+    folium.Marker([lat, lng], tooltip=name).add_to(seoul_map)
+
+# 마커 찍힌 seoul_map.html 저장하기
+seoul_map.save('seoul_map.html')
+    # html로 켜진다
+
+
+
+
+#--------------------------------------
+# 14.1
+# p529
+import json
+path = 'datasets/bitly_usagov/example.txt'
+open(path).readline()
+records = [json.loads(line) for line in open(path)]
+    # UnicodeDecodeError: 'cp949'
+    # utf8로 바꿔준다
+records = [json.loads(line) for line in open(path, 'r', encoding='utf-8')]
+
+records[0]
+records[1]
+
+frame = pd.DataFrame(records)
+    type(frame) # pandas.core.frame.DataFrame
+
+## 위나 아래나 동일함
+frame = pd.read_json('datasets/bitly_usagov/example.txt', lines=True)
+    type(frame) # pandas.core.frame.DataFrame
+
+# p535
+frame.columns
+    # tz필드: 데이터에서 가장 빈도가 높은 표준시간대
+
+tz_counts = frame['tz'].value_counts()
+type(tz_counts)
+    # 시리즈 1차원 자료
+
+clean_tz = frame['tz'].fillna('Missing')
+import numpy as np
+(tz_count == np.nan).sum()    # NaN의 개수
+(clean_tz == "").sum()      # 빈 칸의 개수
+clean_tz[clean_tz==""] = "Unknown"  # 빈 칸 처리
+tz_counts = clean_tz.value_counts()     ### 저장! 끝에 괄호!
+
+subset = tz_counts[:10]
+
+import seaborn as sns
+sns.barplot(x=subset.values, y=subset.index)
+# sns.barplot(x=subset.values, y=subset.index, data=subset)
+    # data=subset을 설정하면 다른 그래프 나옴
+
+# frame['a']
+frame['a'][1]
+    # 'GoogleMaps/RochesterNY'
+frame['a'][50]
+    # 'Mozilla/5.0 (Windows NT 5.1; rv:10.0.2) Gecko/20100101 Firefox/10.0.2'
+'''
+## 공백기준으로 쪼개자
+frame['a'][51].split()
+cframe = cframe.
+    # id 변치 않음. view타
+'''
+
+#--------------------------------------
+# 14.5 2012년 연방선거관리위원회 DB
+# Federal Election Commission Database
+# p574 op440
+# 정치활동 후원금에 대한 데이터 갖고 놀아보자
+fec = pd.read_csv('datasets/fec/P00000001-ALL.csv')
+fec.info()
+fec.iloc[123456]
+unique_cands = fec.cand_nm.unique()
+
+parties = {'Bachmann, Michelle': 'Republican',
+           'Cain, Herman': 'Republican',
+           'Gingrich, Newt': 'Republican',
+           'Huntsman, Jon': 'Republican',
+           'Johnson, Gary Earl': 'Republican',
+           'McCotter, Thaddeus G': 'Republican',
+           'Obama, Barack': 'Democrat',
+           'Paul, Ron': 'Republican',
+           'Pawlenty, Timothy': 'Republican',
+           'Perry, Rick': 'Republican',
+           "Roemer, Charles E. 'Buddy' III": 'Republican',
+           'Romney, Mitt': 'Republican',
+           'Santorum, Rick': 'Republican'}
+
+fec.cand_nm[123456:123461].map(parties)     # 데이터 구경
+fec['party'] = fec.cand_nm.map(parties)     # 저장
+fec['party'].value_counts()
+
+fec.columns     # contb_receipt_amt : 기부 총액
+    fec[fec.contb_receipt_amt<=0]
+    fec.iloc[41]    # 기부총액이 < 0 일 수 있구나..
+(fec.contb_receipt_amt>0).value_counts()
+fec = fec[fec.contb_receipt_amt>0]
+    # 기부총액 > 0 인 데이터만 저장
+
+# 'Obama, Berack', 'Romney, Mitt'만 추려보자
+# p578
+fec_mrbo = fec[fec.cand_nm.isin(['Obama, Berack', 'Romney, Mitt'])]
+
+fec.contbr_occupation.value_counts()
+    # occupation: 기부자 직업
+
+
+
+

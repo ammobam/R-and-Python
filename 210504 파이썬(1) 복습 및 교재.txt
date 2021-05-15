@@ -1,0 +1,172 @@
+# numpy 복습
+import numpy as np
+a = np.zeros(10)
+a[4]=1
+
+np.arange(10,50)
+np.arange(10,50)[::-1]
+
+A = np.arange(0,9).reshape(3,3)
+
+df.iloc(5)["열이름"]   # 6행의 특정 열
+
+#------------------------------
+# Magic command(%)
+# p43
+%run test1.py   # .py 파일 실행
+%pwd    # 현재 워킹디렉토리 확인
+%cpaste
+
+# instropection 자기관찰 ?,??
+# p51
+print?
+def add_nyum(a, b):
+    return a+b
+    '''
+    내가 만든 함수
+    '''
+add_nyum?
+add_nyum??
+np.*load*?  # 단어가 포함된 모든 함수 보여줌 # *(와일드카드)
+np.load??
+
+# 매직 명령어
+# p56
+a = np.random.randn(100,100)
+%timeit np.dot(a,a)
+%timeit a@a
+
+np.dot(a,a) # 내적곱
+a.dot(a)
+a@a
+
+b = np.random.randn(10,10)
+%timeit b@b
+    # 1.64 µs ± 12.1 ns per loop (mean ± std. dev. of 7 runs, 1000000 loops each)
+    # 한번 계산한 데 걸린 시간 1.64µs
+    # 상위 7개(단시간)에 걸린 평균 시간임
+    # 각 100000번 계산함
+
+import matplotlib.pyplot as plt
+import numpy as np
+import plotly as plt # 그래프 그리기
+x = np.linspace(0,2*np.pi,100)
+    # pi값 꺼내기 (1) math.pi (2) numpy.pi
+plt.plot(x, np.sin(x))
+plt.show()
+    # p59 cumsum 누적합
+
+# 변수와 인자 전달 (바인딩)
+# p63
+# Sementic :코드조각의 의미
+
+# p65 / 원서 p34
+id('a')
+a = 5
+isinstance(a, int)
+isinstance(a, float)    # False
+
+a = 5; b = 4.5
+isinstance(a, (int,float))  # True (,) or로 묶임
+isinstance(b, (int,float))
+
+# p66 / 원서 p35
+# iterator 판단 함수 만들기
+def isiterable(a):
+    try:
+        iter(a)
+        return True
+    except TypeError:   # iterable 객체 아닌 경우
+        return False
+
+isiterable('a string')
+isiterable(5)
+
+# p68 // 원서 p37
+a = [1,2,3]
+b = a
+c = list(a)
+
+print(a, b, c)
+a is b
+a is c  # False
+
+id(a)
+id(b)
+id(c)
+
+a == c  # 비교연산자는 '값'이 동일하다는 뜻. 동일객체는 아닐 수 있음.
+
+None?
+    # None은 객체(인스턴스). 예약어 아님. p77
+
+a=2; b=-1
+bool( a>5 & b<0 )
+
+# 비트 연산
+# https://ko.wikipedia.org/wiki/%EB%B9%84%ED%8A%B8_%EC%97%B0%EC%82%B0
+3&2     # 2
+    '''
+    이진법으로 3은 11, 2는 10
+    11
+    10
+    ---
+    10 => 10진수로 2
+    각 자릿수를 비교해, 두 값 모두에 1이 있을 때에만 1을, 나머지 경우에는 0을 계산한다.
+    '''
+5&4     # 4
+    '''
+    101
+    100
+    ---
+    100 => 10진수로 4
+    '''
+4|5
+    '''
+    100
+    101
+    ---
+    101
+    각 자릿수를 비교해, 두 값 모두에 0이 있을 때에만 0을, 나머지 경우에는 1을 계산한다.
+    '''
+
+# p70 / 원서 p38
+a = (1,2,3)
+a[0] = 7
+    # TypeError: 'tuple' object does not support item assignment
+    # 튜플은 immutable
+a = "hello"
+a[0] = "d"
+    # TypeError: 'str' object does not support item assignment
+    # 문자열은 immutable
+
+# p72 / 원서 p40
+a = "this is a string"
+b = a.replace('st', 'long long stt')
+
+# p78
+from datetime import datetime, date, time
+datetime.now()
+dt = datetime(2011,10,29,20,30,21)
+dt.day
+dt.minute
+
+dt.date()
+dt.time()
+
+dt.strftime('%m/%d/%Y %H:%M') # str 타입으로 format하는 함수
+dt.strptime('20210504', '%Y%m%d') # str 타입을 parsing(자르는) 함수
+dt.datetime     # p79 왜 안 나와
+
+# p82
+# break test
+for i in range(4):
+    for j in range(5):
+        if i>j:
+            print ("break!", i, j)
+            break
+        print (i,j)
+
+for a,b,c in [(1,2,3), (4,5,6), (7,8,9)]:
+    print(a,b,c)
+

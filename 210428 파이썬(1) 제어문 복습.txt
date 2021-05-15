@@ -1,0 +1,80 @@
+#
+scores = {'ddd': 90, 'aaa': 89}
+sum=0
+for key in scores:
+    print(scores[key])
+    sum = sum + scores[key]
+    print("%s: %d"%(key, scores[key]))
+avg= sum/len(scores)
+print("합:%d. 평균:%.2f"%(sum, avg))
+
+
+# 100부터 300까지 5의 배수의 합은?
+sum=0
+for five in range(100, 300+1, 5):
+    sum = sum + five
+print(sum)
+#==동일한 코드===
+sum=0
+for five in range(100, 300+1):
+    if five %5==0:
+        sum = sum + five
+print(sum)
+
+#-------------------
+# for문 팁
+list[i] < len(list)-1
+## 리스트 길이-1
+#-------------------
+
+# break
+coffee = 10
+money = 300
+while True:
+    print("커피를 준다")
+    coffee=coffee-1
+    print("남은 커피는 %s잔"%coffee)
+    if coffee==3:
+        print("판매 중지")
+        break
+        # break에서 끝!
+
+# continue
+a = 0
+while a < 10:
+    a += a
+    if a%2==0:
+        continue
+        # continue 뒤의 문장이 실행되지 않고 while문 맨 처음으로 돌아감
+    print(a)
+
+# 무한루프 p137
+import time
+a = 0
+while True:
+    a += 1
+    print(a)
+    time.sleep(1)
+    # 1초마다 실행. 터미널 창에 1초마다 숫자 뜨는 것 볼 수 있음
+## 정지시키려면 터미널 창에서 ctrl + c 눌러주자
+    ## KeyboardInterrupt
+
+
+#-----------------------------------------------
+# 외부 라이브러리 설치 pip
+# 라이브러리는 R에서 패키지
+# 단, [win + r] > cmd창이나 명령 프롬프트에서 실행해야함
+# pip 눌러서 명령어 확인
+'''
+pip install folium #지도 읽는 라이브러리
+'''
+
+import folium
+# ModuleNotFoundError: No module named 'folium'
+# 오류 나는 이유: 패키지가 업뎃/ 파이썬이 업뎃돼서 
+# 더이상 해당 패키지버전 사용불가 등등..
+# 이걸 라이브러리마다 이유 찾긴 어려움
+# 라이브러리 버전 등등 가상환경 맞춰주는 아나콘다 쓰자
+
+
+

@@ -1,0 +1,44 @@
+# Pandas
+'''
+panel datas(패널 자료)
+https://pandas.pydata.org/
+https://www.programmer-books.com/wp-content/uploads/2019/04/Python-for-Data-Analysis-2nd-Edition.pdf
+책 파이썬 판다스(까만바탕 초록 뱀그림)
+'''
+'''
+판다스
+1차원 자료구조 Series
+2차원 자료구조 DataFrame
+판다스에서 index 중요
+
+판다스로는 데이터 입력보다 읽어들이는 일을 더 자주 함.
+입력 너무 신경쓰지 말 것.
+'''
+import pandas as pd
+dir(pd)
+
+# Series 만들기
+animals = ['Tigers', 'Bears', 'Moose']
+p = pd.Series(animals);p
+    # dtype: object
+    # 판다스에서는 String을 object라고 함
+nums = [1,2,3]
+pd.Series(nums)
+    # dtype: int64
+
+# 딕셔너리를 Series로 만들기
+dict_a = {'a':1, 'b':2, 'c':3}
+print(dict_a)
+d = pd.Series(dict_a);d
+    '''
+    a    1
+    b    2
+    c    3
+    dtype: int64
+    '''
+    # key가 인덱스로 들어가 있다
+
+# DataFrame 만들기
+
+...
+알아서

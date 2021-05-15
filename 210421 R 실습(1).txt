@@ -1,0 +1,63 @@
+R studio 패키지
+설치 방법
+	- 오른쪽 아래 화면에서 Packages 오른쪽 위 돋보기/혹은 install 버튼
+현재 설치된 패키지 확인
+	- 오른쪽 위 돋보기 pl검색
+library 사용
+	- 체크박스 체크
+
+데이터 타입
+	- numeric, chracter, logical
+
+
+R 스튜디오 세팅
+	- 메뉴> tool> Global> General> Default 디렉토리 변경 가능
+	- 메뉴> tool> Global> Code> Saving> Default...[Ask]를 UTF-8로 세팅
+	- 메뉴> file> new file> python> 명령어 입력 후 미니콘다 설치 가능
+
+
+
+>--------------------------------
+#행렬 복습
+#1) 4행5열 행렬 만들기
+#2)행의 이름을 a,b,c,d로 선언하기
+#3)열의 이름을 가,나,다,라,마로 선언하기
+
+mat<-matrix(1:20, nrow=4, byrow=T)
+rownames(mat)<-c("a", "b", "c", "d")
+colnames(mat)<-c("가", "나", "다", "라", "마")
+
+#4)나, 라열 추출하기
+#5)c행과 d행 x 나열과 라열의 모든 원소의 합?
+
+sum(mat[c("c","d"),c("나","라")])
+
+>--------------------------------
+
+#함수 총정리
+
+#prob = 확률
+sample(1:10,5)
+1:10
+#시퀀스 <-- by ???
+seq(1, 10,by=2)
+data.frame()
+cbine()
+as.data.frame()
+is.integer()
+
+read.table()
+write.table(obj, "adsda.txt")
+
+read.csv()
+write.csv()
+
+library(readxl)
+read_excel()
+
+save(obj, file="adas.rda")
+load("sfsa.rda")
+
+
+>--------------------------------
+

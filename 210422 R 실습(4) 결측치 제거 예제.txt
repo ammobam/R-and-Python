@@ -1,0 +1,93 @@
+#예제
+airquality
+nrow(airquality)
+dim(airquality)
+names(airquality)
+
+#열 이름 바꾸기(Solar.R를 Solar로)
+#바꾸고 나면 저장하기
+##방법1)
+airquality %>% 
+  dplyr::rename(Solar = Solar.R)
+##방법2)
+class(names(airquality))
+names(airquality)   #Solar.R 위치 확인
+names(airquality)[2] <- "Solar"
+airquality   #확인
+##방법3)
+names(airquality) <- c("Ozone", "Solar", "Wind", "Temp", "Month", "Day")
+
+#모두 몇 개의 결측치(NA)가 있는가?
+table(is.na(airquality))
+summary(airquality)
+#44개
+
+#어느 열에 결측치가 가장 많은가?
+airquality %>% 
+  filter()
+
+#모든 결측치를 지운 데이터프레임 air1를 생성하고, air1의 행 수를 구하라
+#1)
+air1 <- na.omit(airquality)
+nrow(air1) #111개
+nrow(airquality)
+#2)
+na.omit(airquality) %>% nrow()
+
+#Ozone의 결측치를 지운 데이터프레임 air2를 생성하고, 행 수를 구하라
+airquality
+air2 <- airquality %>% filter(!is.na(Ozone))
+nrow(air2)
+
+#Solar열의 5월달 평균 구하기
+#mean(airquality$Solar, na.rm=T)
+
+airquality %>% select(Solar, Month) %>% 
+  filter(Month==5) %>% 
+  summarise(mean(airquality$Solar, na.rm=T))
+##mean은 R 기본함수라서 dplyr함수인 %>%가 못 읽음.
+##summarise()안으로 꼭 넣기.
+
+airquality %>% select(Solar, Month) %>% 
+  filter(Month==5) %>% 
+  filter(!is.na(Solar)) %>% 
+  summarise(mean(Solar))
+##왜 두 코드의 결과값이 다를까?
+##??? 첫코드에 airquality$Solar, Solar 넣을 때 각 값이 다름.............테스트
+
+#Solar의 월별 평균은?
+airquality %>%  select(Solar, Month) %>% 
+  group_by(Month) %>% 
+  summarise(mean(airquality$Solar, na.rm=T))
+
+#Ozone과 Solar의 월별 평균은?
+airquality %>% select(Ozone, Solar, Month) %>% 
+  group_by(Month) %>% 
+  summarise(햇빛=mean(Solar, na.rm=T),
+              오존=mean(Ozone, na.rm=T))
+
+#--------------------------------
+#데이터타입 dataframe과 tibble의 차이점?
+class(airquality) 
+data.frame #전체 데이터를 보여줌
+           #head(데이터프레임, 20)
+tibble #행 상위 10개만 보여줌, 열도 몇개 선별.
+
+#데이터프레임을 티블로 변환해보자
+as_tibble(데이터셋) 
+
+
+
+
+#.........................테스트
+airquality %>% select(Solar, Month) %>% 
+  filter(Month==5) %>% 
+  summarise(mean(airquality$Solar, na.rm=T))
+##185.9315
+
+airquality %>% select(Solar, Month) %>% 
+  filter(Month==5) %>% 
+  summarise(mean(Solar, na.rm=T))
+##181.2963
+
+

@@ -1,0 +1,104 @@
+install.packages("readxl")
+
+setwd("c:/Rdata/")
+library(readxl)
+exam <- read_excel("excel_exam.xlsx")
+exam
+
+#행렬 정렬하기(오름차순)
+library(dplyr)
+arrange(exam, math)
+exam %>% arrange(math)
+  #위 두 함수는 동일함! 아래문장이 exam이 상위임을 표시한 좀더 좋은 문장
+#select(exam, math)
+#  exam %>% select(math)
+
+exam %>% arrange(desc(math))
+
+exam %>% arrange(class, math)
+exam %>% arrange(math,class)
+  #math오름차순 정렬하고 그 아래 class오름차순
+
+#mutate함수= 새로 만들 것이다, 열을.
+##값은 세 열의 각 값을 더한 것, 이름은 total
+exam %>% mutate(total=math+english+science) %>% 
+  head()
+##화면에 출력됐을 뿐, 저장되지 않은 상태임
+
+#각 행의 평균 열 구하기
+exam %>% mutate(평균=(math+english+science)/3) %>% head()
+
+#mean함수는 쓸 수 있을까?ㄴ...
+exam %>% mutate(평균=mean(exam$math+exam$english+exam$science))
+
+#데이터>mutate>ifelse(조건, T일때 출력문, F일때)
+exam %>% 
+  mutate(test=ifelse(science >=60, "pass", "fail")) %>% 
+  head()
+
+#-----------------------------------
+mean()
+sd()
+sum()
+median()
+min()
+max()
+n()#빈도는 dplyr에 있는 함수
+
+#summarise() 쓰는 이유? 다음 두 코드는 동일.
+exam %>% summarise(mean_math=mean(math))
+mean(exam$math)
+
+#소속사가 달라서 오류나는 코드
+exam %>% filter(class==1) %>% mean(math)
+#고쳐보자(1)
+cl <- exam %>% filter(class==1)
+mean(cl$math)
+#고쳐보자(2)  mean이 안 먹히니까 summarise로 맞춰주자
+exam %>% filter(class==1) %>% summarise(mean(math))
+
+#summarise()는 group_by()와 함께 써서 자동화!
+##group_by(열)은 열별로 분리
+exam %>% group_by(class) %>% summarise(평균=mean(math))
+
+exam %>% 
+  group_by(class) %>% 
+  summarise(최하점 = min(math))
+
+#------------------------------
+#---------------------
+#실습
+library(ggplot2)
+mpg$manufacturer
+
+##mgp에 있는 회사 몇 개?
+mpg %>% 
+  group_by(manufacturer) %>% 
+  summarise()
+
+unique(mpg$manufacturer)
+
+##그 회사는 각각 몇 번 나오나?빈도
+mpg %>% 
+  group_by(manufacturer) %>% 
+  summarise(n())
+
+unique(mpg$manufacturer)
+table(mpg$manufacturer)
+
+#자료구조 확인해보자
+str(mpg)
+##각 회사명은 char보단 범주 데이터. 데이터형 바꿔주자.
+as.factor(mpg$manufacturer)
+##저장
+mpg$manufacturer <- as.factor(mpg$manufacturer)
+##확인
+str(mpg)
+  ##데이터타입이 Factor, 15레벨이 생김
+
+mpg %>% group_by(manufacturer) %>% 
+  filter(class == "suv") %>% 
+  mutate(tot = (cty + hwy)/2) %>% 
+  summarise(mean_tot = mean(tot)) %>% 
+  arrange(desc(mean_tot)) %>% head(5)
+#-------------------

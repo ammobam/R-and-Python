@@ -1,0 +1,151 @@
+# p321
+# df1, df2 만들기
+df1 = pd.DataFrame({'one':[0,2,4],'two':[1,3,5]}, index=['a','b','c'])
+df2 = pd.DataFrame({'three':[5,7],'four':[6,8]}, index=['a','c'])
+
+# DataFrame 붙이는 방법
+pd.concat() # 함수
+pd.merge(df1,df2)
+df1.merge(df2)
+df1.join()  # 메소드
+
+# 두 df1,df2 합치기
+# p330
+pd.concat([df1,df2], axis=1)
+
+    '''
+       one  two  three  four
+    a    0    1    5.0   6.0
+    b    2    3    NaN   NaN
+    c    4    5    7.0   8.0
+    '''
+
+#-------------------------------------
+# 8.2.4 겹치는 데이터 합치기
+# Combining Data with Overlap
+# p333 op241
+
+# 8.3 재형성과 피벗
+# 8.3 Reshaping and Pivoting
+# p334 op242
+
+'''
+피벗: 데이터 형태를 재배치
+long form
+    행이 많은 표
+    컴퓨터가 잘 연산
+    stack
+wide form
+    열이 많은 표
+    인간이 편안
+    unstack
+'''
+
+
+#-------------------------------------
+# 8.3.2 long => wide 피벗하기
+# p338 op246
+
+import os
+os.getcwd('C:/Users/admin/Pydata')
+
+data = pd.read_csv('examples/macrodata.csv')
+
+data.head()
+periods = pd.PeriodIndex(year=data.year, quarter=data.quarter, name='date')
+columns = pd.Index(['realgdp','infl','unemp'], name='item')
+data = data.reindex(columns=columns)
+data.index = periods.to_timestamp('D','end')
+
+    # 말일의 말초... 1959-03-31 23:59:59.999999999
+    # data.index = periods.to_timestamp('D','start')
+    # '1959-01-01'
+
+ldata = data.stack().reset_index().rename(columns={0:'value'})
+
+pivoted = ldata.pivot('date','item','value')
+    # p341
+    # pivot( 여기 들어갈 인자는 늘 3개 )
+    # data 로우 이름, item은 열을 총칭, value는 표의 값으로 할 것들
+'''
+ldata와 pivoted의 결과를 비교해보자.
+ldata의 열에 있던 date칼럼이 pivoted의 index로 내려왔다.
+
+item                           infl    realgdp  unemp
+date                                                 
+
+item: infl, realgdp, unemp
+'''
+
+ldata['value2'] = np.random.randn(len(ldata))
+    # 'value2'열 추가. 값은 idata의 길이와 같은 수의 정규분포를 따르는 랜덤한 수.
+    # 자동 저장됨
+pivoted = ldata.pivot('date','item')
+    # 값으로 들어갈 것을 생각하면 'value1','value2' 둘다 들어감
+ldata.pivot('date','item', ['value','value2'])
+    # 위 코드와 동일함
+    # p341
+
+# 내용에 접근하는 방법
+pivoted['value']
+pivoted['value']['infl']
+    # pivoted['value'][1]... 숫자 인덱스는 안 된다
+
+# pivot은 set_data([행,열]).unstack() 과 동일
+ldata.pivot('date','item')
+ldata.set_index(['date','item']).unstack()
+    # set_index에서 [행,열] 인덱스로 묶기 주의
+
+
+
+#-------------------------------------
+# 8.3.3. wide => long 피벗하기
+# p342 op249
+df = pd.DataFrame({'key': ['foo', 'bar', 'baz'],
+                   'A': [1, 2, 3],
+                   'B': [4, 5, 6],
+                   'C': [7, 8, 9]})
+        '''
+           key  A  B  C
+        0  foo  1  4  7
+        1  bar  2  5  8
+        2  baz  3  6  9
+        '''
+melted = pd.melt(df, ['key'])
+    # pd.melt(df, id_vars=['key'])
+    # id_vars : identifier
+    # non-identifier : variables, indicator
+    # melt 함수에 이미 'variable','value'가 들어가 있음
+    '''
+    The top-level melt() function and the corresponding DataFrame.melt() are useful to massage a DataFrame into a format where one or more columns are identifier variables, while all other columns, considered measured variables, are “unpivoted” to the row axis, leaving just two non-identifier columns, “variable” and “value”. The names of those columns can be customized by supplying the var_name and value_name parameters.
+    '''
+        '''
+           key variable  value
+        0  foo        A      1
+        1  bar        A      2
+        2  baz        A      3
+        3  foo        B      4
+        4  bar        B      5
+        5  baz        B      6
+        6  foo        C      7
+        7  bar        C      8
+        8  baz        C      9
+        '''
+reshaped = melted.pivot('key','variable','value')
+    # melt함수에서 적용된 'key','variable','value'로 pivot 부름
+    # pivot 후 (행, 열, 값) 순으로 들어감
+        # test = melted.pivot('variable','value', 'key')
+    # p343 In[161]
+
+reshaped.reset_index()
+    '''
+    variable  key  A  B  C
+    0         bar  2  5  8
+    1         baz  3  6  9
+    2         foo  1  4  7
+    '''
+# A, B열만 고르기
+pd.melt(df, id_vars=['key'], value_vars=['A','B'])
+
+reshaped.columns
+

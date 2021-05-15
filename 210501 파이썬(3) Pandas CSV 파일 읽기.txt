@@ -1,0 +1,165 @@
+import pandas as pd
+
+# csv 파일 읽고 쓰기
+df = pd.read_csv("https://github.com/plotly/datasets/raw/master/auto-mpg.csv")
+df.to_csv("판다스로저장한CSV파일")
+    # 워킹 디렉토리에 저장됨
+    
+# 워킹 디렉토리 읽어오기
+import os
+os.getcwd()
+os.c
+
+# excel 파일 읽고 쓰기
+df = pd.read_excel("http://qrc.depaul.edu/Excel_Files/Presidents.xls")
+df.to_excel("판다스로저장한엑셀파일")
+
+#-------------------------------
+# 자료 읽는 메서드
+df = pd.read_csv("https://github.com/plotly/datasets/raw/master/auto-mpg.csv")
+
+df.head()   # 위 5개
+df.tail()   # 아래 5개
+
+df.shape
+df.size
+
+df.describe()   # mean 등등
+df.info()
+df.dtypes
+
+# 개수 세기
+df.count()  # 빈도수 세기
+df['mpg']   # Name: mpg, Length: 398, dtype: float64
+            # [열] 디폴트
+len(df.mpg.unique())   # 
+df['cylinders'].value_counts
+df.mpg.value_counts()
+
+
+#-------------------------------
+# 기초 통계량 계산하기
+df.mean()   # median(), min(), max(), std(), var()
+
+# 열 1개의 평균
+df.mpg.mean()
+df['mpg'].mean()
+
+# 열 2개의 평균
+df[['mpg', 'cylinders']].mean()
+
+
+#-------------------------------
+# 결측치
+# 값이 없다
+# null, NA, 빈칸, 텅 비어있다
+# pandas에서는 구분 않고 'NA'
+
+import seaborn as sns
+
+df = sns.load_dataset('titanic')
+df.head()
+
+# 몇행 몇열일까?
+df.shape
+df.info
+df.info()
+    # 891이 대부분인데 age는 714. NA 결측치가 있다는 뜻.
+    # dtypes: bool(2), category(2), float64(2), int64(4), object(5)
+    # 데이터 타입별 열 개수
+
+# 결측치가 있는가?
+df.isnull()
+    # True : 결측치가 있다
+df.isnull().sum()
+    # 열별 True의 개수 센다
+
+# 결측치 제거
+df.dropna()
+    # [182 rows x 15 columns]
+    # 원본은 [891 rows x 15 columns]
+    # 저장 안 됨
+df1 = df.dropna()
+
+df.dropna(axis=1)
+
+# 결측치 대체
+## 평균값으로 대체하기
+mean_age = df['age'].mean()
+df['age'].fillna(mean_age, inplace=True)
+    # NA값에 mean값 넣고 저장함
+df['age'].isnull()
+df['age'].isnull().sum()
+    # 검증. 0이 나와야 NA 없는 것.
+
+## NA 앞값으로 대체하자
+df['age'].fillna(method='ffill')
+    # 나이순 정렬되어 있었다면 20, 20, NA, 21 ... 에서 NA에 평균값인 29를 넣는 것보다 앞칸의 값을 넣는 것이 합리적이다.
+    # ffill : foward fill
+
+
+#-------------------------------
+# 중복 데이터
+
+df = pd.DataFrame({'A':['a','a','b','a','b'],
+                   'B':[1,1,1,2,2],
+                   'C':[1,1,2,2,2]})
+
+df.duplicated()
+    # 첫행은 무조건 False값으로 나옴
+    # 첫행과 나머지 행의 비교
+    
+df['A'].duplicated()
+    # 'A'열의 요소끼리 비교
+    # ?????????????????????????
+
+# 중복행 제거
+df.drop_duplicates()
+
+#-------------------------------
+
+# concat
+
+# Series + Series
+E = pd.Series(['e0','e1','e2','e3'], name='e')
+F = pd.Series(['f0','f1','f2'],name='f', index=[3,4,5])
+    # 인덱스도 부여할수 있다
+G = pd.Series(['g0','g1','g2','g3'],name='g')
+
+# 각 시리즈를 concat 해보자
+pd.concat([E,F])
+    # series니까 위아래로 붙는다
+    # 옆으로 붙는건 dataframe
+    # 인덱스 3이 겹치네
+pd.concat([E,G])
+
+# index 기준으로 concat 하자
+    # dataframe이 나옴
+pd.concat([E,G], axis =1)
+    # 0123,0123 중복되니까
+pd.concat([E,F], axis =1)
+    # 중복된 3행 외에는 NaN
+
+# DataFrame + DataFrame
+df1 = pd.DataFrame({'a':['a0','a1','a2'],
+                    'b':['b0','b1','b2'],
+                    'c':['c0','c1','c2']},
+                   index = [0,1,2])
+
+
+df2 = pd.DataFrame({'b':['b2','b3','b4'],
+                    'c':['c2','c3','c4'],
+                    'd':['d2','d3','d4']},
+                   index = [1,2,3])
+
+pd.concat([df1,df2])    # 행(아래) 붙임
+pd.concat([df1,df2], axis=1)    # 열(옆으로) 붙임
+
+# inner join, outer join
+'''
+pd.merge(df1, df2, left_on='b', right_on='b', how='inner')
+http://www.gisdeveloper.co.kr/?p=8255
+'''
+
+
+

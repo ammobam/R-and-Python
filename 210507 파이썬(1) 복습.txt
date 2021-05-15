@@ -1,0 +1,62 @@
+# 혼자복습
+# 선형대수
+# p172 op116
+
+import numpy as np
+a = np.arange(2).reshape(1,2);a
+    '''
+    array([[0, 1]])
+    '''
+b = np.arange(2).reshape(2,1);b
+    '''
+    array([[0],
+           [1]])
+    '''
+x = np.array([[1., 2., 3.], [4., 5., 6.]])
+y = np.array([[1],[2],[3]])
+np.dot(x, np.ones(3))   # 왜 2x1이 아닌 1x2 행렬이 나오지
+np.dot(x, np.ones([3,1]))   # 이건 제대로 2x1 행렬 나옴. np.ones 함수의 폼 차이.
+np.dot(x, y)
+
+# QR 분해?
+'''
+실수행렬을 직교행렬과 상삼각행렬의 곱으로 나타내는 행렬 분해
+https://ko.wikipedia.org/wiki/QR_%EB%B6%84%ED%95%B4
+임의의 행렬 A를 정규화된 행렬 Q와 실수의 곱으로 표현하는 것을
+QR분해라고 함
+선형연립방정식의 해 찾는 과정
+https://angeloyeo.github.io/2020/11/23/gram_schmidt.html
+'''
+
+# 드래그 금지 페이지 푸는법
+'''
+F12 > 오른쪽 위 setting > debug > disable javascript
+드래그 가능
+'''
+#---------------------------------------
+# 같이복습
+# 원하는 행렬 만들기
+np.identity(3)
+np.eye(3)
+
+# 정규분포를 따르는 5x5 행렬
+np.random.randn(5,5)
+
+# 정규분포를 따르는 평균10 표준편차2인 5x5행렬
+np.random.randn(5,5)*2 + 1
+np.random.normal(10,2,(5,5))
+
+x = np.ones((2,3))
+y = np.full((3,2),2)
+np.dot(x,y)
+np.ones((2,3))@np.full((3,2),2)
+
+# 데이터타입 바꾸기 astype
+a = np.arange(1,13).reshape(3,4)
+a.dtype
+a.astype(np.float64)
+
+a = np.arange(1,13,dtype='int32').reshape(3,4)
+    # dtype = ''은 np.arange에서 요소 생성할 때 지정
+
+#---------------------------------------

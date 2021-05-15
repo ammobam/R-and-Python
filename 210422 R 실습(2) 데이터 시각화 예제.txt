@@ -1,0 +1,13 @@
+library("ggthemes")
+
+#labs()
+p <- ggplot(data=mpg, aes(x=displ, y=hwy, color=drv, shape=drv))+
+  geom_point(size=2)+
+  labs(title='배기량과 연비의 관계', x="배기량", y="연비")
+
+#facet() 패싯. 그래프를 타입별로 별도로 그림
+p + facet_wrap(~drv)
+p + facet_wrap(~class)
+  ##변수는 7갠데 색이 3개일 때 적당히 그려줌
+
+

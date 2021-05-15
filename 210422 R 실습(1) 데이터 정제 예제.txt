@@ -1,0 +1,58 @@
+#-----------------------------
+#세팅
+library("dplyr")
+library("foreign")
+library("ggplot2")
+setwd("C:/Rdata")
+#-----------------------------
+glimpse(mpg)
+#배기량 4 이하인 차의 평균연비와 배기량 5 이상인 차의 평균연비(hwy) 비교?
+##방법1
+mpg %>% filter(displ>=5) %>% 
+  summarise(mean(hwy))
+##방법2
+##summarise는 group_by랑 같이 쓰자
+mpg %>% select(displ, hwy) %>% 
+  filter(displ>5 |displ<=4) %>% 
+  mutate(dis=ifelse(displ>=5, "5", "4")) %>% 
+  group_by(dis) %>% 
+    summarise(mean(hwy))
+
+#아우디, ford중 연비 높은 회사?
+mpg
+mpg1<-mpg %>% select(manufacturer, cty) %>% 
+  filter(manufacturer=="audi" | manufacturer=="ford") %>% 
+  group_by(manufacturer) %>% 
+  summarise(avg=mean(cty))
+ggplot(data=mpg1, aes(x=manufacturer, y=avg, fill=manufacturer))+
+  geom_col()
+
+#고속도로연비(hwy), 도시연비(cty)를 통합한 평균연비(total) 생성하고 상위6개 자동차모델(model) 뽑기
+#방법1
+mpg %>% select(model, hwy, cty) %>% 
+  mutate(total=(hwy+cty)/2) %>% 
+  arrange(desc(total)) %>% head(6)
+#방법2
+mpg %>% mutate(total=(hwy+cty)/2) %>% 
+  select(model, total) %>% 
+  arrange(desc(total)) %>% head(6)
+##mutate(열 생성)을 먼저 하고 select하면 결과가 깔끔
+
+#mpg의 변수 중 class, cty 2개 변수만으로 mpg_new 데이터셋 만들기
+mpg_new <- mpg %>% select(class, cty)
+
+#mpg_new에서 class가 suv, compact인 자동차 중 cty가 좋은 것은?
+mpg_new %>% 
+  filter(class=="suv"|class=="compact") %>% 
+  group_by(class) %>% 
+  summarise(mean(cty))
+
+#compact를 가장 많이 생산하는 회사는 어디인가?
+mpg %>% 
+  filter(class=="compact") %>% 
+  group_by(manufacturer) %>%
+  summarise(소형차생산수=n()) %>% 
+  arrange(desc(소형차생산수))
+##summarise(n=n())에서 n()은 꼭 summarise() 안에서만 사용!
+##n()은 행의 개수를 세 준다
+

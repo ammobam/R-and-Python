@@ -1,0 +1,117 @@
+# 4.6 난수생성
+# p174 op119
+
+import numpy as np
+# np.random.normal('평균', '표준편차', ('shape'))
+
+# np.random과 random의 속도 비교
+import random
+random.normalvariate(10,2)
+    # 평균10, 표준편차2    
+for i in range(10):
+    print(random.normalvariate(10,2), end = '  ')
+    # for문으로 n개 뽑아내야함
+
+# 난수 seed
+np.random.seed(1234)    # 1회용 seed
+np.random.randn(3)
+
+np.random.RandomState(1234).randn(3)
+    # 한 줄로 난수 seed와 개수 설정하기
+
+np.random.permutation(10)
+    # permutation 순열. 임의의 순열을 반환.
+    
+arr = np.arange(10)
+np.random.shuffle(arr)
+arr     # shuffle 자동저장됨
+
+np.random.rand(3,2)
+    # uniform distribution
+    # 0~1 안의 수만 반환함. 3행2열.
+
+np.random.randint(1, 10, (2,2))
+    # np.random.randint(low, high, shape)
+    # dtype은 int로 고정
+
+np.random.normal(10, size=(2,3))
+    # 가우시안(정규)분포. 평균 10, size지정가능
+
+np.random.uniform(10,11,size=3)
+    # low, high, shape
+
+np.random.random()
+
+#--------------------------------------
+# random으로 계단오르기 그래프 그리기
+# 혼자 해보자 
+# p176 op119
+samples = np.random.normal(size=(4,4))
+    # size를 꼭! 그냥 튜플은 평균4, 편차4
+import random
+import matplotlib.pyplot as plt
+position = 0
+walk = [position]
+steps = 1000
+for i in range(steps):
+    step = 1 if random.randint(0,1) else -1
+        # random.randint(0,1)은 0과 1만 출력
+        # bool(0) = False, 그외의 수는 모두 True
+        # step은 0일 때 -1, 1일 때 1 값을 가짐
+        # p176 참고
+    position += step
+    walk.append(position)
+    
+import plotly as plt
+plt.plot(walk[:100])
+
+
+#--------------------------------------
+# Pandas
+# p181 op123
+import pandas as pd
+from pandas import Series, DataFrame
+# Pandas의 자료형은 1차원 시리즈, 2차원 데이터프레임. 3차원 없음.
+
+obj = pd.Series([4, 7, -5, 3], index=['a','b','d','g'])
+
+sdata = {'Ohio': 35000, 'Texas': 71000, 'Oregon': 16000, 'Utah': 5000}
+obj3 = pd.Series(sdata)
+    # dtype: int64
+states = ['California', 'Ohio', 'Oregon', 'Texas']
+obj4 = pd.Series(sdata, index=states)
+    # float64: NaN값의 데이터타입
+    # 'Ohio', 'Oregon', 'Texas'는 sdata의 key로서 기존의 value를 불러온다.
+obj3 + obj4
+    # float64
+    # Utah를 보면 NaN + (int)는 NaN으로 반환된다
+
+obj4.index  # index 찾기
+pd.isnull(obj4)     # NaN값에 True
+pd.notnull(obj4)    # NaN값에 False
+
+# 객체와 인덱스에 이름 붙이기
+obj4.name = 'population'
+obj4.index.name = 'state'
+obj4
+        '''
+        state
+        California        NaN
+        Ohio          35000.0
+        Oregon        16000.0
+        Texas         71000.0
+        Name: population, dtype: float64
+        '''
+obj4.index  # 인덱스 이름 바뀐 것 확인
+
+# NaN값 만들기
+obj3['Ohio'] = np.nan
+    # Ohio          NaN
+
+
+obj.index = ['Bob', 'Steve', 'Jeff', 'Ryan']
+obj.index[0]    # 'Bob'
+obj.index[0] = 'Boo'
+    # 인덱스 개별 수정 불가능. 전체만 가능.
+    # TypeError: Index does not support mutable operations
+

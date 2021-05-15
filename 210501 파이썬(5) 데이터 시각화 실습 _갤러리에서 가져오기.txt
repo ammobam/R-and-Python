@@ -1,0 +1,98 @@
+# 파이썬 그래프 갤러리 실습
+'''
+# jupyterlab note 그래프 사이즈 조절방법입니다
+plt.rcParams['figure.figsize'] = [30, 30]
+
+파이썬 그래프 갤러리 참고
+https://www.python-graph-gallery.com/
+'''
+import numpy as np
+import pandas as pd
+import matplotlib as plt
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+titanic = sns.load_dataset("titanic")
+
+#--------------------
+# 연습1
+# Avoid overlapping in scatterplot with 2D density plot
+# Libraries
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import kde
+ 
+# Create data: 200 points
+data = np.random.multivariate_normal([0, 0], [[1, 0.5], [0.5, 3]], 200)
+x, y = data.T
+ 
+# Create a figure with 6 plot areas
+fig, axes = plt.subplots(ncols=3, nrows=1, figsize=(21, 5))
+ 
+# Everything starts with a Scatterplot
+axes[0].set_title('Scatterplot')
+axes[0].plot(x, y, 'ko')
+# As you can see there is a lot of overlapping here!
+ 
+# Thus we can cut the plotting window in several hexbins
+nbins = 20
+axes[1].set_title('Hexbin')
+axes[1].hexbin(x, y, gridsize=nbins, cmap=plt.cm.BuGn_r)
+
+# contour
+axes[2].set_title('Contour')
+axes[2].pcolormesh(xi, yi, zi.reshape(xi.shape), shading='gouraud', cmap=plt.cm.BuGn_r)
+axes[2].contour(xi, yi, zi.reshape(xi.shape) )
+
+plt.show()
+
+
+#--------------------
+# 연습2
+# Dendrogram
+'''
+종족 유전자 진화도로 만들어보자
+http://www.seehint.com/word.asp?no=12694
+데이터 어디서 찾지
+아님 한국인 성씨 가계도 있나
+정부데이터셋 찾아보자
+'''
+# Libraries
+import pandas as pd
+from matplotlib import pyplot as plt
+from scipy.cluster.hierarchy import dendrogram, linkage
+import numpy as np
+ 
+# Data set
+url = 'https://python-graph-gallery.com/wp-content/uploads/mtcars.csv'
+df = pd.read_csv(url)
+df = df.set_index('model')
+ 
+# Calculate the distance between each sample
+Z = linkage(df, 'ward')
+ 
+# Plot with Custom leaves
+dendrogram(Z, leaf_rotation=90, leaf_font_size=8, labels=df.index)
+
+# Show the graph
+plt.show()
+
+#--------------------
+# 연습3
+
+
+
+#--------------------
+# 연습4
+
+
+
+#--------------------
+# 연습5
+
+
+
+
+
+
+

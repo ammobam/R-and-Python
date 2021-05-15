@@ -1,0 +1,88 @@
+# 5.3 기술통계 계산 및 요약
+# Summarizing and Computing Descriptive Statistics
+# p226 op158
+df = pd.DataFrame([[1.4, np.nan], [7.1, -4.5],
+                   [np.nan, np.nan], [0.75, -1.3]],
+                  index=['a', 'b', 'c', 'd'], 
+                  columns=['one', 'two'])
+        '''
+        one  two
+        a  1.40  NaN
+        b  7.10 -4.5
+        c   NaN  NaN
+        d  0.75 -1.3
+        '''
+
+df.sum()
+df.sum(axis=0, skipna=False)
+df.idxmax()
+        '''
+        one    b    # 7.10
+        two    d    # -1.3
+        dtype: object
+        각 열(one)에서 큰 값이 있는 행 추출
+        '''
+# 5.3.1 상관관계와 공분산
+# p229
+#------------------------
+%pwd
+import os
+os.chdir('C:/Users/admin/Pydata')
+    # change directory
+    # \를 /로 바꿔주자
+#------------------------
+price = pd.read_pickle('examples/yahoo_price.pkl')
+
+# 각 주식의 퍼센트 변화율
+returns = price.pct_change()
+returns.head()
+returns.tail()
+
+# 두 Series의 상관관계
+returns['MSFT'].corr(returns['IBM'])
+returns.MSFT.corr(returns.IBM)
+    # 0.4997636114415114
+
+# 두 열의 공분산
+returns['MSFT'].cov(returns['IBM'])
+returns.MSFT.cov(returns.IBM)
+    # 8.870655479703546e-05
+    # covariance
+    # 공분산: 두 개 확률변수의 선형 관계
+    # 상관관계는 -1 ~ +1까지의 값을 가지며 +1은 강한 상관관계
+    ## https://destrudo.tistory.com/15
+    ## 분산: 한 개 확률변수에 대해 흩어진 정도
+
+# DataFrame returns와 Series인 returns.IBM의 상관관계 계산
+returns.corrwith(returns.IBM)
+    '''
+    AAPL    0.386817
+    GOOG    0.405099
+    IBM     1.000000
+    MSFT    0.499764
+    dtype: float64
+    '''
+    # IBM 기준으로 상관관계 계산
+
+# !pip install pandas-datareader
+import pandas_datareader.data as web
+price.columns
+all_data = {ticker: web.get_data_yahoo(ticker)
+            for ticker in ['AAPL', 'GOOG', 'IBM', 'MSFT']}
+volume = pd.DataFrame({ticker: data['Volume']
+                       for ticker, data in all_data.items()})
+returns.corrwith(volume)
+    '''
+    AAPL    0.262138
+    GOOG   -0.082406
+    IBM    -0.265132
+    MSFT   -0.037851
+    dtype: float64
+    '''
+
+# 5.3.2 유일값, 값세기, 멤버십
+# Unique Values, Value Counts, and Membership
+# p232 op162
+obj = pd.Series(['c', 'a', 'd', 'a', 'a', 'b', 'b', 'c', 'c'])
+uniques = obj.unique()
+uniques

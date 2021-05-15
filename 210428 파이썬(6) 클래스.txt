@@ -1,0 +1,47 @@
+#---------------------------
+# 클래스
+# p183
+
+result = 0
+def add(num):
+    global result
+    result += num
+    return result
+
+print(add(10))
+    # 반복하면 result값 10 증가해서 저장
+    # del result
+
+result2 = 0
+def add2(num):
+    global result2
+    result2 += num
+    return result2
+add2(100)
+add2(200)
+
+#------------------------------
+# p185
+# 클래스의 첫글자는 대문자로 적자
+
+class Caculator:
+    def __init__(self):
+        self.result = 0
+    def add(self, num):
+        self.result += num
+        return self.result
+    # self는 관습적으로 주는 것
+
+Caculator()
+    # 첫글자가 대문자인 것을 보고 클래스임을 안다. 함수가 아니라.
+
+# 다른 이름을 지어 여러 번 쓰기 편함
+cal1 = Caculator()
+cal2 = Caculator()
+
+# 클래스 사용 방법
+cal1.add(10)
+cal1.add(20)
+
+dir(Caculator)
+

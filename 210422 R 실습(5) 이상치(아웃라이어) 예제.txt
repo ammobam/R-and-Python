@@ -1,0 +1,17 @@
+#Outlier(이상치)
+#정상치에서 벗어나있는 것. 우리가 찾을 값.
+#예)로또1등번호, 가장 저렴한 가격, 입력오류 등
+outlier <- data.frame(sex=c(1,2,3,2,1,2,1,2),
+                      score=c(5,3,6,3,4,2,5,99))
+#오류값을 NA로 바꿔 처리한다
+outlier$sex <- ifelse(outlier$sex==3, NA, outlier$sex)
+outlier$score <- ifelse(outlier$score>10, NA, outlier$score)
+outlier
+
+#boxplot을 그려보자
+##데이터셋에서 이상치 파악하기 딱 좋다
+mpg$hwy
+summary(mpg$hwy)
+boxplot(mpg$hwy)
+##위의 동그라미 둘이 이상치.
+

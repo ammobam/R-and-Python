@@ -1,0 +1,28 @@
+import math
+print('%.3f' %math.ceil(3.77555))   # 4.000
+print('%.4f' %round(3.77555))       # 4.0000
+
+import random
+random.randint(1,20)
+
+from datetime import datetime
+today = datetime.now()
+today.year
+christmas = datetime(2021,12,25)
+day_dday = christmas - today
+print("크리스마스까지 D-day: %d" %day_dday.days)
+
+#---------------------
+# iterate : 반복하다
+# range(10)은 0부터 9까지 숫자를 갖고있는 것이 아니라 그때그때 생산하는 함수임
+# terable 객체 - 반복 가능한 객체
+# 대표적으로 iterable한 타입 - list, dict, set, str, bytes, tuple, range
+
+a = range(10)
+list(a.__iter__())
+a.__iter__().__next__() # 왜 다음값 안줘? a 값 저장 안 돼서
+a1 = a.__iter__()   # 값 저장
+a1.__next__()   # a 안의 값 하나씩 꺼내 보여줌
+
+# enumerate : 열거하다
+# enumerate 함수는 리스트의 원소에 순서값을 부여해줌

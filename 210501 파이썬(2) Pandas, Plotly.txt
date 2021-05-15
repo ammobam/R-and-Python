@@ -1,0 +1,134 @@
+===================
+pandas
+
+import pandas as pd
+pd.DataFrame(data=[4,5,6,7], index=range(0,4), columns=['A'])
+
+dict_a = {'c0':[1,2,3], 'c1':[4,5,6].'c2':[7,8,9], 'c3':[10,11,12],'c4':[13,14,15]}
+print
+
+#-------------------
+import numpy as np
+a=np.array([1])
+a
+
+# 열이름 붙여 만들기 pd.DataFrame
+df = pd.DataFrame([[17,'여','여중'],[15,'남','남중']],
+                 index = ['영희','철수'],
+                 columns = ['나이','성별','학교'])
+print(df)
+
+# 열이름으로 삭제
+df.drop('철수')
+
+# 열이름 모두 삭제하면 행 사라짐
+df.drop(['영희','철수'])
+
+df.drop('영희', axis=1, inplace=True)
+    # inplace 디폴트값 False
+
+# 행이름 삭제할 땐 axis = 0, 이게 디폴트
+# 원상복구 ?
+# 편집한 자료 저장 방법
+'''
+1.inplace=True
+2. = df 덮어쓰기
+'''
+
+#-------------------
+df = pd.DataFrame([[90,98,85,100],[80,89,95,90],[70,95,100,90]],
+                  index = ['서준', '우현', '인아'],
+                  columns=['수학','영어','음악','체육'])
+df
+df['수학'] # 열이름으로 접근 됨
+df[['수학', '영어']]    # 두 개 뽑을 땐 []로 묶기
+
+df['서준'] # 행이름으로는 에러남
+df.loc['서준'] # location(위치) 불러줘야 행이름으로 고를 수 있음
+df.loc[['서준', '우현']]
+
+df.iloc[0]  # 숫자 인덱스로 불러올 때 iloc 쓰기. int location.
+df.iloc[[0,1]]  
+df.iloc[:1] # 슬라이싱 됨
+
+# 출력물이 다르다
+df.loc['서준'] # 시리즈
+df.loc[['서준']] # 한 줄 짜리 데이터프레임
+
+df.수학 # 열은 이름만으로 가능. 1개만 가능.
+df.서준 # 행은 안됨
+
+# 행렬 이름 확인
+df.index
+df.columns
+
+# 이름 갱신
+df.index = ['준','현','아']
+    # 단 이름 개수가 동일해야함
+    # 자동 저장됨
+
+# 이름 한 개만 갱신 될까? rename
+df.index[0] = '준' 
+    # 이 방법은 안 된다
+    # TypeError: Index does not support mutable operations
+df.rename(index = {'서준':'준', '우현':'현'})
+df.rename(columns = {'수학':'Math', '영어':'English'})
+    # 저장 안 됨
+
+#-------------------------
+# 실습
+# Plotly 설치
+!pip install plotly
+# conda install plotly
+# 주피터에서 !로 시작하면 명령프롬프트로 코드 감
+
+# 갭마인더로 데이터 불러오기
+import plotly.express as px
+df = px.data.gapminder()
+df.head()
+df.shape
+
+    # 행뽑기
+df.loc[[100,200,300,400,500]]
+df.iloc[100:600:100]
+df = df.iloc[100:501:100]
+    # 열삭제 / 열은 axis=1
+df.drop(['gdpPercap','iso_alpha','iso_num'], axis=1, inplace=True)
+    # 행이름바꾸기
+df.index = ['A','B','C','D','E']
+    # 열이름일부분바꾸기
+df = df.rename(columns = {'continent':'conti', 'lifeExp' : 'life'})
+df.rename(columns = {'continent':'conti', 'lifeExp' : 'life'}, inplace = True)
+    ## 파일저장을 하려면 1.갱신 2.iniplace=True 적기
+
+#-------------------
+df = pd.DataFrame([[90,98,85,100],[80,89,95,90],[70,95,100,90]],
+                  index = ['서준', '우현', '인아'],
+                  columns=['수학','영어','음악','체육'])
+# 행 만들기
+# loc는 있으면 찾아주고 없으면 만들어줌
+df.loc['상기'] = [95,100,80,95]
+
+# 열 만들기
+df["미술"] = [80,90,95,100]
+df["과학"] = [80]
+    # ValueError: Length of values (1) does not match length of index (4)
+df["과학"] = 80
+    # broadcasting. [80,80,80,80]을 자동으로 생성해서 추가함
+
+# 인덱스로 내용 찾기
+df[2,3]
+    # KeyError: (2, 3)
+    # 판다스는 넘파이와 다름
+df.iloc[2,3]
+    # 판다스는 int location
+df.iloc[2][3]
+    # 3행 4열 나옴. 인덱스 0부터 붙으니까.
+df.loc["인아"]
+df.loc["인아", "체육"]  # 된다
+df.loc["인아", ["체육", "미술"]]
+
+# 내용 갱신하기
+df.loc["인아", "체육"] = 90
+df.loc["인아", ["체육", "영어"]] = 80,90
+

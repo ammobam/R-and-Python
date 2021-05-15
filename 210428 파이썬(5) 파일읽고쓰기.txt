@@ -1,0 +1,73 @@
+# 4-3 파일 읽고 쓰기
+# p171
+'''
+1. 읽기, 쓰기 기능을 가지는 객체를 만든다
+2. 객체.writer()
+'''
+#--------------------
+# 파일 쓰기
+f = open("new.txt", 'w')
+    # open은 파일이 있으면 열고, 없으면 만들어서 연다
+    # 'w'는 write 가능, 'r'은 읽기 전용, 'a'는 append로 덧붙임
+    # working directory에 저장되어 있다
+dir(f)
+f.close()
+    # 파일을 닫을 때 저장됨
+    # 파일 닫아야 지우거나 이동하는 등 다른 기능 실행할 수 있음
+
+text = "Hello\n"
+    # open하고 써야됨
+f.write(text)
+
+text1 = "Good Morning"
+f.write(text1)
+    # 파일 열어보면 좀전 저장한 Hello는 지워지고 text1 내용만 들어있음
+text1 = "Good Morning"
+
+#---- 정리------
+# p172
+f = open("new.txt", 'w')
+for i in range(1,11):
+    data = "%d번째 줄입니다\n"%i
+    f.write(data)
+f.close()
+
+
+#--------------------
+# 파일 읽기
+file = open("new.txt", 'r')
+lines = file.readlines()
+    # "new.txt"을 켜면 \n이 안 보이지만
+    # 종이에 출력하면 \n이 보임
+        ## strip으로 다듬어주자
+for line in lines:
+    print(line, end='')
+file.close()
+
+
+#--------------------
+'''
+with ~ as ~:
+'''
+f = open("new.txt", "w")
+text = "Hello"
+f.write(text)
+f.close()
+# 위 코드에서 f.close() 없이도 저장 되게 해보자
+
+with open("new.txt", "w") as f:
+    text = "Hello"
+    f.write(text)
+
+# csv파일로 저장하려면 ... 다른 모듈 필요함. 나중에.
+
+# 연습문제
+
+num=int(input('수를 입력하세요: '))
+def nodd(num):
+    if num%2!=0:
+        return True
+    else:
+        return False
+nodd(num)
+    # ctrl + [, ] 누르면 여러줄 탭 가능

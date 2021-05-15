@@ -1,0 +1,19 @@
+import numpy as np
+data = {i: np.random.randn() for i in range(7)}
+data = [np.random.randn() for i in range(7)]
+
+np.random.randn()
+    # 넘파이의 random 모듈 안의 randn() 함수
+    # rand: random
+    # n: normal distribution, 표준 정규 분포
+np.random.randn(30)
+    # 정규분포 따른 랜덤한 숫자 30개 줌
+
+np.random.normal(10, 2, 3)
+    # 평균 10이고, 표준편차 2인 랜덤한 수 3개 뽑음
+    # 10 기준으로 약간 차이나는 값 3개 나옴
+np.random.randn(3)*2 +10
+    # Z = (x - 평균)/표준편차
+    # x = Z*(표준편차) + 평균
+    # np.random.normal(10, 1, 3)랑 같은 식임
+

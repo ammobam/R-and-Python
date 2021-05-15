@@ -1,0 +1,84 @@
+#------------------------------------
+복지 데이터 세팅
+raw_welfare<- read.spss("Koweps_hpc10_2015_beta1.sav")
+welfare<- as.data.frame(raw_welfare)
+str(welfare)
+welfare <- welfare %>% 
+  select(gender = h10_g3, birth=h10_g4,
+         marriage=h10_g10, religion=h10_g11,
+         income=p1002_8aq1, job=h10_eco9,
+         region=h10_reg7)
+welfare$gender <- ifelse(welfare$gender==2, "여자", "남자")
+
+names(welfare)
+unique(welfare)
+
+#------------------------------------
+
+#age열을 만든다, 2021은 1살
+welfare<- welfare %>% mutate(age =2015-birth+1)
+names(welfare)
+
+#tibble로 변환
+welfare <- as_tibble(welfare)
+
+#qplot보단 ggplot 쓰자
+#qplot(welfare$birth)
+
+ggplot(data=welfare, aes(x=gender, y=income), color=drv)+
+  geom_boxplot()
+  ##ggplot(   data= , aes(x=, y=), color=  )
+  ##색 넣을 때 괄호 위치 주의하자.
+
+summary(welfare)
+#income있는 age 묶어보자
+summary(welfare$age)
+welfare %>% filter(age==109)
+age_income <- welfare %>% 
+  filter(!is.na(income)) %>% 
+  group_by(age) %>% 
+  summarise(mean_income = mean(income))
+  ##2살은 어디 갔나? income=NA 데이터로 날라감
+g <- ggplot(data=age_income, aes(x=age, y=mean_income), color=drv)+
+  geom_line()
+ggplotly(g)
+
+#-------------------------
+#연령대(세대)별 평균소득
+#x축: 영, 미들, 올드 / y축: 평균소득
+welfare <- welfare %>% 
+  mutate(age_gen = ifelse(age <30, "young",
+                        ifelse(age <=50, "middle", "old")))
+
+table(welfare$age_gen)
+##세대별 소득
+age_gen_income <- welfare %>% 
+  group_by(age_gen) %>% summarise(mean_income =mean(income, na.rm=T))
+
+ggplot(data=age_gen_income, aes(x=age_gen, y=mean_income), fill=drv)+
+  geom_col(aes(fill=age_gen))
+
+gender_income <-welfare %>% 
+  group_by(age_gen, gender) %>% 
+  summarise( mean_income = mean(income, na.rm=T))
+
+ggplot(data=gender_income, aes(x=age_gen, y=mean_income), fill=gender)+
+  geom_col(position="dodge")+
+  scale_x_discrete()
+#관용적으로 쓰는 코드 : geom_col(position="dodge")
+
+#-------------------------
+#나이와 성별에 따른 소득
+
+gender_age <- welfare %>% 
+  filter(!is.na(income)) %>% 
+  group_by(age, gender) %>% 
+  summarise(mean_income=mean(income))
+
+ggplot(data=gender_age, aes(x=age, y=mean_income, col=gender))+
+  geom_line()
+
+
+>>>>>>>>gender 별 그래프... (aes(x, y, col=gender))< col위치 주의
+
+

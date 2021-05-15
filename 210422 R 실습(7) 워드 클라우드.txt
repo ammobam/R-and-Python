@@ -1,0 +1,85 @@
+#워드 크라우드
+#nlp 자연어 처리
+#한글 워드 크라우드를 쓸 수 있게 패키지 설치
+install.packages("multilinguer")
+library(multilinguer)
+install_jdk()
+install.packages(c('stringr', 'hash', 'tau', 'Sejong', 'RSQLite', 'devtools'), type = "binary")
+install.packages("remotes")
+remotes::install_github('haven-jeon/KoNLP', upgrade = "never", INSTALL_opts=c("--no-multiarch"))
+devtools::install_github("cardiomoon/moonBook",force=TRUE)
+#-----------------------------
+#앞으로 사용할 땐 다음 코드만
+library(KoNLP)
+library(wordcloud2)
+library(rJava)
+library(dplyr)   # %>% 써야됨
+useNIADic()
+useSejongDic()
+#-----------------------------
+#다음 한 세트는 [워드 크라우드] 프로그램
+setwd('C:/Rdata/')
+text=readLines("kennedy.txt")
+#encoding 방식 따라 글자가 깨질 수 있음.
+nouns <- extractNoun(text)
+nouns <- unlist(nouns)
+##명사 아닌 것이 많다
+nouns <- nouns[nchar(nouns)>=2]
+##오류를 감수하고 2글자 이상의 단어만 명사로 판단
+wordFreq <- table(nouns)
+wordFreq <- sort(wordFreq, decreasing = T) %>% head(20)
+wordcloud2(wordFreq, fontFamily = '굴림')
+#wordcloud2 함수 도움말 봐봐.
+##data	:A data frame including word and freq in each column
+##데이터 프레임을 원한다. 벡터가 아니라. 근데 F2 눌러서 보면 알아서 벡터>테이블 전환됨
+
+#특정 키워드 빼는 방법?
+#1) unlist(nouns)에서 빼기
+#2) wordFreq에서 빼기
+
+
+#코드만---------------------------
+setwd('C:/Rdata/')
+text=readLines("ahn.txt", encoding = "CP949")
+nouns <- extractNoun(text)
+nouns <- unlist(nouns)
+nouns <- nouns[nchar(nouns)>=2]
+wordFreq <- table(nouns)
+wordFreq <- sort(wordFreq, decreasing = T) %>% head(20)
+wordcloud2(wordFreq, fontFamily = '굴림')
+
+#''''''''''''''''''''''''''''''''
+setwd('C:/Rdata/')
+text=readLines("kimdaejung.txt", encoding = "UTF-8")
+nouns <- extractNoun(text)
+nouns <- unlist(nouns)
+nouns <- nouns[nchar(nouns)>=2]
+wordFreq <- table(nouns)
+wordFreq <- sort(wordFreq, decreasing = T) %>% head(20)
+wordcloud2(wordFreq, fontFamily = '굴림')
+
+#---------------------------------
+#이어서 코딩해볼까
+wordFreq1 <- table(nouns)
+wordFreq1 <- as.data.frame(wordFreq) %>% 
+  arrange(desc(wordFreq)) %>% 
+  head(10)
+#그래프로 표현
+barplot(wordFreq)
+#더 나은 그래프
+library(ggplot2)
+ggplot(data=wordFreq1, aes(x=nouns, y=Freq, fill=nouns))+
+  geom_col(stat="identity")
+#누운 그래프  coord_flip()
+ggplot(data=wordFreq1, aes(x=nouns, y=Freq, fill=nouns))+
+  geom_col(stat="identity")+
+  coord_flip()
+#x축 반대로  x=reorder (단, 데이터가 factor/데이터프라임형)
+ggplot(data=wordFreq1, aes(x=reorder(nouns, Freq), y=Freq, fill=nouns))+
+  geom_col(stat="identity")
+#범례 지우기
+ggplot(data=wordFreq1, aes(x=reorder(nouns, Freq), y=Freq, fill=nouns))+
+  geom_col(stat="identity") +
+  ylab("빈도수")+xlab("주요어휘")+
+  theme(legend.position = 'none') 
+

@@ -1,0 +1,146 @@
+교재: 점프투파이썬
+
+인터프리터언어< >컴파일언어(C, C#)
+파이썬과 C의 조합: numpy
+
+앱은 자바, 코틀린
+파이썬으로는 라이브러리 빈약
+인터랙티브 웹은 약함. 자바스크립트 쓰자.
+그냥 웹 ㅇ
+
+32bit가 좀더 안정성/금융업
+
+-------------
+https://velog.io/@sxin2949/윈도우에서-리눅스-개발-환경-구축하기
+-------------
+
+출력방식에 따른 결과물은 '' 여부가 다름
+a="apple"
+a =>'apple'
+print(a) =>apple
+
+파이썬은 줄 잘 맞춰야만 실행
+
+IDE: Integraded Development Environment
+IDLE: Integraded Development and Learning Environment
+같은 뜻
+
+module : .py 파일
+
+와 습관 무섭네 실행 단축키로 shift+enter 누르고 있어
+
+----------------
+윈도우 커멘드창에서 파이썬 파일 실행해보자
+
+[win]+r
+cmd
+
+명령 프롬프트 창 기본 경로(path)
+C:\Users\admin
+
+우리가 저장한 파일 경로
+C:\Users\admin\AppData\Local\Programs\Python\Python39
+	- 폴더 주소명에서 숨김파일표시 또는 \appdata 추가해서 실행하면 보임
+
+""""""""""""""""
+C:\Users\admin
+	cd C:\Users\admin\AppData\Local\Programs\Python\Python39
+	python.exe test1.py
+""""""""""""""""
+cd ...
+	- 상위 경로로
+""""""""""""""""
+설치시 PATH 표시했으면 python.exe 경로 설정할 필요 없이
+파일 폴더에 .py 파일 넣어서 실행 가능
+C:\Users\admin>python test1.py
+
+---------------------
+IDLE 소개
+
+VS Code
+	- extension 부착시 ram 2기가까지도 먹음
+파이참
+Rstudio
+Sublime text
+	- 과거에 인기있는 아이들
+	- 한글 잘 안받음
+Spyder
+"""아래는 인터넷으로 코딩 가능
+Ipython
+Jupyter notebook
+	- 웹상에서 코드 작성 가능
+JupyterLab
+Colab
+	- 폰코딩 가능
+	- 주피터 팀이 구글로 들어감
+
+---------------------
+1.익스케이프 문자(\n)
+c = "I like the song, named 'Island'. \n
+Tempo is good."
+print(c)
+	EOL : End of Line
+c = "I like the song, named 'Island'. \nTempo is good."
+print(c)
+	해결!
+
+
+2. 익스케이프 문자(\")
+say = " (<첫번째)\"(<두번째)이렇게 하면 두번째 \"도 살릴 수 있음"
+print(say)
+
+#(<첫번째)"(<두번째)이렇게 하면 두번째 "도 살릴 수 있음
+
+
+3. 줄바꿈 명령어 없이 줄바꿈 출력하기("""~""")
+say1=""" 이렇게
+입력하면
+된다"""
+print(say1)
+
+
+4. slicing
+a[start:stop]
+	#start 포함, stop 이전까지 slicing
+a[ :7] #a[0:7]와 동일
+a[3: ] #a[3:stop]와 동일
+a[:] #처음부터 끝까지
+a=[4,-7] #index는 첫글자는 0, 왼쪽부터1+, 오른쪽부터 1-
+	"""'
+need="you need python"
+print(need[4:8])
+
+a = '20210426shine'
+print(a[0:4])
+print(a[4:8])
+print(a[8:])
+	"""
+
+5.
+#print함수의 디폴트값
+for i in range(0, len(need)):
+    print(need[i], end=\n)
+#변경예시
+for i in range(0, len(need)):
+    print(need[i], end='')
+
+
+6.mutable 자료형(p56)
+- 요소를 치환 가능한 자료형
+- mutacle: list
+- immutable 자료형: str
+	R:	a<-c(1, 2)
+	python:	a=[1, 2]
+
+--------------------------
+VS code 세팅
+
+ctrl + shift + x > python 설치
+새 파일 .py로 저장 > 왼쪽아래 설정 클릭(ctrl+shift+p)> python
+
+다른 python 설치할 필요 없고, 설치해으면 disnable 체크하기
+
+코드 실행
+	- 코드 우클릭, [Run in Terminal
+	- 단축키는 shift + enter
+

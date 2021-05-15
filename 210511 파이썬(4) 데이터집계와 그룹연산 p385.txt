@@ -1,0 +1,178 @@
+# 10. 데이터집계와 그룹연산
+# Data Aggregation and Group Operations
+# p385
+
+# 10.1 GroupBy Mechanics
+# split-apply-combine
+# p386 op288
+
+df = pd.DataFrame({'key1' : ['a', 'a', 'b', 'b', 'a'],
+                   'key2' : ['one', 'two', 'one', 'two', 'one'],
+                   'data1' : np.random.randn(5),
+                   'data2' : np.random.randn(5)})
+        '''
+          key1 key2     data1     data2
+        0    a  one -0.359818 -0.445626
+        1    a  two -1.226476  1.841743
+        2    b  one -0.502854 -0.443671
+        3    b  two -0.384747 -0.604645
+        4    a  one  0.243342  0.211665
+        '''
+
+grouped = df['data1'].groupby(df['key1'])
+    # df['key1']을 기준으로 group화함
+        ## list(grouped)
+        '''
+        [('a',
+          0   -0.359818
+          1   -1.226476
+          4    0.243342
+          Name: data1, dtype: float64),
+         ('b',
+          2   -0.502854
+          3   -0.384747
+          Name: data1, dtype: float64)]
+        '''
+    # GroupBy 객체
+    # <pandas.core.groupby.generic.SeriesGroupBy object at 0x0000028F9A7181C0>
+    # 그룹연산을 위한 모든 정보를 가짐
+
+grouped.mean()
+df.groupby(['key1', 'key2']).mean()
+
+# 성가신 컬럼? nuisance column
+# p389
+df.groupby(['key1']).mean()
+        '''
+                 data1     data2
+        key1                    
+        a    -0.447651  0.535927
+        b    -0.443801 -0.524158
+        '''
+'''
+# 만약 key2가 숫자 컬럼이라면?
+df2 = pd.DataFrame({'key1' : ['a', 'a', 'b', 'b', 'a'],
+                    'key2' : [1,2,1,2,1],
+                    'data1' : np.random.randn(5),
+                    'data2' : np.random.randn(5)})
+df2.groupby(['key1']).mean()
+## key2도 계산되어 나온다
+                  key2     data1     data2
+        key1                              
+        a     1.333333 -0.354552  0.226847
+        b     1.500000  0.657967  0.670803
+'''
+#----------------------------------------------
+# 10.1.1 그룹 간 순회하기 (groupby 내부 열어보기)
+# Iterating Over Groups
+# p390 op2910
+
+# 방법1: 반복문
+for i,j in df.groupby('key1'):
+    print(i)
+    print(j)
+
+    '''
+    a
+      key1 key2     data1     data2
+    0    a  one -0.359818 -0.445626
+    1    a  two -1.226476  1.841743
+    4    a  one  0.243342  0.211665
+    b
+      key1 key2     data1     data2
+    2    b  one -0.502854 -0.443671
+    3    b  two -0.384747 -0.604645
+    
+    # key1 안에 a, b가 있음
+    '''
+
+# 방법2: 딕셔너리
+pieces = dict(list(df.groupby('key1')))
+pieces['a']
+
+# 방법3: 리스트
+list(df.groupby('key1'))
+
+#----------------------------------------------
+# 10.1.2 칼럼선택 또는 하위칼럼 선택하기
+# Selecting a Column or Subset of Columns
+df.groupby('key1')['data1']
+    # <...SeriesGroupBy> 객체
+df.groupby('key1')[['data1']]
+    # <...DataFrameGroupBy> 객체
+'''
+Syntactic sugar
+Programming syntax that does not add new features, but makes something more
+convenient or easier to type.
+'''
+
+#----------------------------------------------
+# 그룹핑 방법 : dict, series, function, index levels
+
+# 10.1.3 Grouping with Dicts and Series
+# p394 op294
+people = pd.DataFrame(np.random.randn(5, 5),
+                      columns=['a', 'b', 'c', 'd', 'e'],
+                      index=['Joe', 'Steve', 'Wes', 'Jim', 'Travis'])
+
+mapping = {'a': 'red', 'b': 'red', 'c': 'blue',
+           'd': 'blue', 'e': 'red', 'f' : 'orange'}
+
+by_column = people.groupby(mapping, axis=1)
+by_column.sum()
+    # mapping : 일대일 대응 리스트
+    # a,b,c,d,e를 mapping 따라 red, blue로 분류하여 정리함
+    # axis = 1 : 오른쪽 열 기준 정렬
+
+# 10.1.4 Grouping with Functions
+# p395 op295
+people.groupby(len).sum()
+key_list = ['one', 'one', 'one', 'two', 'two']
+    # people의 index가 5개여서 key도 5개 준다
+people.groupby([len, key_list]).min()
+
+# 10.1.5 Grouping by Index Levels
+
+
+#----------------------------------------------
+# 10.2 Data Aggregation
+# 데이터 집계
+# p396 op296
+# .agg()
+df.groupby(df).agg(#사용자 정의 함수)
+df.groupby(df).agg('기존의 함수')
+
+
+# 10.2.1 컬럼에 여러 가지 함수 한번에 적용하기
+# Column-Wise and Multiple Function Application
+# p398 op298
+
+tips.columns
+grouped = tips.groupby(['day','smoker'])
+tip_num = tips.groupby(['total_bill', 'tip', 'size', 'tip_pct'])
+
+# 각 열의 평균은?
+tips.mean()
+tips.groupby(['day','smoker']).mean()
+
+# 요일에 따라 팁금액의 최댓값과 최솟값의 차이는?
+def peak2p(x):
+    return x.max() - x.min()
+tips.groupby('day').agg(peak2p)
+
+# 여러함수 한번에 적용하기
+tips.groupby('day')['tip'].agg(['mean', 'max'])
+    ## dat별 tip을 값으로 mean, max함수 각각 적용
+    # .agg(사용자정의함수)
+    # .agg('기존함수')
+tips.groupby('day')['tip'].agg(['mean', peak2p])
+    ## 잘 적용됨
+
+# 여러값에 여러함수 한번에 적용하기
+tips.groupby('day')['tip', 'size'].agg(['mean', peak2p])
+tips.groupby('day').agg({'tip': 'mean', 'size': peak2p})
+    # p402 딕셔너리 방식으로 적용가능.
+    # day의 tip에는 mean, day의 size에는 peak2p 함수를 적용.
+    # 위 두 코드는 같은 값을 준다.
+
+

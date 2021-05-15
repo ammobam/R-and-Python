@@ -1,0 +1,158 @@
+# p402 In[69]
+grouped = tips.groupby(['day', 'smoker'])
+ftuples = [('Durchschnitt', 'mean'),('Abweichung', np.var)]
+    # np.var : variance along the specified axis / 열별 분산
+grouped['tip_pct', 'total_bill'].agg(ftuples)
+
+
+df = grouped.agg({'tip':np.max, 'size':'sum'})
+    # agg.('기존함수', 사용자정의함수)
+
+df.unstack()
+    # unstack() <- 괄호 꼭 붙이기
+
+df.reset_index()
+    # day, smoker 행이 열로 이동
+
+grouped.agg({'tip_pct':['min','max','mean','std'],
+             'size': 'sum'})
+
+
+# 10.3 일반적인 분리, 적용, 결합
+
+def top(df, n=5, column='tip_pct'):
+    return df.sort_values(by=column, ascending=False)[:n]
+    # 열에 따라 값을 분류함
+    # [:n] 앞부터 n글자
+    # ascending=False , 내림차순
+    # 상위 5개를 뽑아내는 함수
+top(tips, n=6)
+
+tips.groupby('smoker').apply(top)
+# tips.groupby('smoker').agg(top)
+    # ValueError: Shape of passed values is (8, 2), indices imply (7, 2)
+    # .agg() 는 집계를 나타내는 함수에서 사용 가능
+    # 사용자정의함수 top은 분류하는 함수. 계산 x.
+
+tips.groupby(['smoker','day']).apply(top, n=1, column='total_bill')
+
+# p406 In[78]
+result = tips.groupby('smoker')['tip_pct'].describe()
+result.unstack()
+result.reset_index()
+
+
+# 10.3.2 변위치 분석과 버킷 분석
+# Quantile and Bucket Analysis
+# p407 op305
+
+frame = pd.DataFrame({'data1': np.random.randn(1000),
+                      'data2': np.random.randn(1000)})
+quartiles = pd.cut(frame.data1, 4)
+    # dtype: category
+quartiles[:10]
+
+def get_stats(group):
+    return {'min': group.min(), 'max': group.max(),
+            'count': group.count(), 'mean': group.mean()}
+
+grouped = frame.data2.groupby(quartiles)
+    # categorical 객체는 바로 groupby로 넘길 수 있다
+    
+grouped.apply(get_stats).unstack()
+
+#-----------------------------------------
+# 10.4 피벗테이블과 교차일람표
+# 10.4 Pivot Tables and Cross-Tabulation
+# p418 op313
+
+tips.pivot_table(index=['day', 'smoker'])
+
+tips.pivot_table(['tip_pct', 'size'], index=['time', 'day'], columns='smoker')
+
+# margin을 줘보자
+tips.pivot_table(['tip_pct', 'size'], index=['time', 'day'], columns='smoker',
+                 margins=True)
+    # All이 margins=True에 의해 나온 칼럼
+
+
+# 10.4.1 교차일람표
+# Cross-Tabulations: pd.crosstab()
+# p421 op315
+
+tips.info()
+    # Dtype 확인하자
+
+pd.crosstab(tips.smoker, tips.day)
+pd.crosstab(tips.smoker, tips.day, margins=True)
+    # (행, 열)
+pd.crosstab([tips.time, tips.smoker], tips.day, margins=True)
+    # 다중인덱스의 경우 ([행1,행2], 열)
+
+
+#-----------------------------------------
+# 11.시계열
+# Time Series
+# p423 op317
+
+# 11.1 날짜, 시간 자료형, 도구
+
+from datetime import datetime
+    # import datetime.datetime
+now = datetime.now()
+    # datetime.datetime(2021, 5, 12, 12, 7, 16, 384869)
+now.year, now.month, now.day, now.hour, now.minute, now.second
+
+delta = datetime(2011,1,7) - datetime(2008,6,24,8,15)
+    # datetime.timedelta(days=926, seconds=56700)
+delta.days
+delta.seconds
+
+
+from datetime import timedelta
+start = datetime(2011,1,7)
+    # datetime.datetime(2011, 1, 7, 0, 0)
+start + delta 
+start + timedelta(12)
+start + timedelta(0,60)
+
+# strftime() : str from time
+a = datetime(2011,1,7)
+
+str(a)
+    # '2011-01-07 00:00:00'
+str(a)[:10]
+    # '2011-01-07'
+
+a.strftime('%Y-%m-%d')
+a.strftime('%F')
+    # '2011-01-07'
+    # str 변환, 슬라이스, 형식 부여를 한 줄로 하자
+a.strftime('%y-%m-%d')
+    # '11y-01-07'
+
+# strptime() : 
+# 문자열을 datetime으로
+a_str = a.strftime('%D')
+value = "2011-01-03"
+datetime.strptime(value, '%Y-%m-%d')
+
+value2 = ["7/6/2011", "8/6/2011"]
+[datetime.strptime(x, '%m/%d/%Y') for x in value2]
+
+# parse
+# 어지간한 날짜 타입은 다 datetime으로 변환해준다
+from dateutil.parser import parse
+parse('2011.1.1')
+    # datetime.datetime(2011, 1, 1, 0, 0)
+parse('06-07-1992')
+    # datetime.datetime(1992, 6, 7, 0, 0)
+parse('06-07-1992', dayfirst=True)
+    # datetime.datetime(1992, 7, 6, 0, 0)
+parse('21-07-1992')
+    # datetime.datetime(1992, 7, 21, 0, 0)
+    # 자동으로 dayfirst = True 적용
+
+pd.to_datetime(value)
+
+

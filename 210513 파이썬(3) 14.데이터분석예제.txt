@@ -1,0 +1,106 @@
+# 14.데이터 분석예제
+# 14.2 MovieLens의 영화 평점 데이터
+# p542 op413
+'''
+movielens 데이터 m1-1m 다운받아옴
+'''
+import pandas as pd
+# pd.options.display.max_rows = 10
+    # 부가적 옵션
+    ## 주피터는 ctrl + shift + - 누르면 쓰던코드 칸 분리
+
+unames = ['user_id', 'gender', 'age', 'occupation', 'zip']
+users = pd.read_table('ml-1m/users.dat', sep='::',
+                      header=None, names=unames)
+
+rnames = ['user_id', 'movie_id', 'rating', 'timestamp']
+ratings = pd.read_table('ml-1m/ratings.dat', sep='::',
+                        header=None, names=rnames)
+
+mnames = ['movie_id', 'title', 'genres']
+movies = pd.read_table('ml-1m/movies.dat', sep='::',
+                       header=None, names=mnames)
+
+
+# 세 데이터 합치기
+users[:5]
+ratings[:5]
+movies[:2]
+    # users와 ratings는 user_id 칼럼이 공통됨
+    # 그 칼럼으로 데이터 합쳐주자
+pd.merge(users, ratings, on="user_id")
+data = pd.merge(pd.merge(users, ratings, on="user_id"), movies)
+data[:2]
+
+# 성별별 각 영화평점 구하기
+df = data[['title', 'gender', 'rating']]
+data.pivot_table(values = 'rating',     # 값. 앞에 values = 생략 가능
+                 index = 'title',       # 행에 들어갈 열
+                 columns = 'gender',    # 열에 들어갈 열
+                 aggfunc='mean')        # 집계함수  # 디폴트가 mean
+mean_ratings = data.pivot_table(values='rating', index='title', columns='gender',aggfunc='mean')
+    # 저장
+    # [3706 rows x 2 columns]
+
+# 평점건수 250건 이상만 추려보자
+ratings_by_title = data.groupby('title').size()
+ratings_by_title[ratings_by_title >= 250]
+
+active_titles = ratings_by_title.index[ratings_by_title >= 250]
+    # dtype='object', name='title', length=1216
+    # index[ratings_by_title >= 250]
+    # 조건은 bool값이다. True값을 가진 title의 제목만 index로 취함.
+    type(active_titles)
+    # pandas.core.indexes.base.Index
+
+# 평점건수 250건 이상인 영화의 성별별 평점
+mean_ratings = mean_ratings.loc[active_titles]
+    # [1216 rows x 2 columns]
+    # 건수가 줄어들은 것을 볼 수 있다
+
+
+## 그래프 그려보자
+import seaborn as sns
+sns.barplot(x=active_titles, y=mean_ratings.F, data=mean_ratings)
+    # 보기좋게 범위 설정하자
+
+df1 = mean_ratings.sort_values(by = "F", ascending = False)[:10]
+    # F 평점으로 내림차순 정렬하여 상위 10개 데이터를 df1으로 저장한다
+sns.barplot(x="F", y=df1.index, data=df1)
+    # x축은 F 평점, y축은 df1의 행이름으로 막대그래프를 그렸다
+
+## M을 포함해 그래프 그려보자
+    ## gender를 내림
+    ## 10개만 그리자
+df2 = mean_ratings.reset_index()[:10]
+'''
+gender                              title         F         M
+'''
+    # F, M 칼럼을 gender에 묶자
+df3 = df2.melt(id_vars=['title'], value_vars=['F','M'])
+'''
+                                  title gender     value
+0                    'burbs, The (1989)      F  2.793478
+1     10 Things I Hate About You (1999)      F  3.646552
+2                 101 Dalmatians (1961)      F  3.791444
+'''
+    # hue
+sns.barplot(x='value', y='title', data=df3, hue='gender')
+
+
+## 성별간 평점차 큰 영화 그래프 그리기
+    # diff 칼럼 : 여자평점 - 남자평점
+mean_ratings['diff'] = mean_ratings['F'] - mean_ratings['M']
+df4= mean_ratings.sort_values(by='diff', ascending = False)
+    ## 상위 10개만
+df4 = df4[:10]
+sns.barplot(x='diff', y=df4.index, data=df4)
+    # 자주 하는 실수
+    # title은 row라서 'title'이 아니라 df4.index로 뽑아야한다
+
+
+## 영화별 표준편차
+df5 = data.groupby('title')['rating'].std()
+    # std() : Standard Deviation, 표준편차
+
+

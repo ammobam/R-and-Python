@@ -1,0 +1,76 @@
+# 파이썬으로 시각화
+! pip install matplotlib 
+'''
+파이썬 그래프 갤러리 참고
+https://www.python-graph-gallery.com/
+'''
+import pandas as pd
+import matplotlib as plt
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("https://github.com/plotly/datasets/raw/master/auto-mpg.csv")
+
+df.columns
+df.info()
+df.describe()
+
+# 산점도 그리자
+df.plot(kind='scatter', x='weight', y='mpg')
+    # .plot 그림을 그린다
+    # kind = 그래프 종류는 scatter
+    # x축은 'weight', y축은 'mpg'
+    # Out[274]: <AxesSubplot:xlabel='weight', ylabel='mpg'>
+    # 주피터가 아니면 그림이 바로 안 뜸
+plt.show()
+    # 주피터 외에는 이 명령어 꼭 쳐줘야함
+
+plt.scatter(x='weight', y='mpg', c='coral', s=30, data=df)
+plt.title("Scatter Plot: mpg VS weight")
+
+
+#--------------------
+import seaborn as sns
+titanic = sns.load_dataset("titanic")
+titanic.columns
+plt.show()
+
+# 히스토리칼 그래프
+sns.distplot(x=titanic['fare'])
+sns.histplot(x=titanic['fare'])
+    # 업데이트됨
+sns.histplot(x=titanic['fare'],hist=False)
+
+# 도트 막대
+sns.stripplot(x="class", y="age", data=titanic)
+
+# 이산형 변수의 분포(바이올린 도트)
+sns.swarmplot(x="class", y="age", data=titanic)
+
+# 바 그래프
+sns.barplot(x='sex', y='survived', data=titanic)
+
+## 스타일 지정
+sns.set_style('whitegrid')
+
+## 컬러 hue
+sns.barplot(x='sex', y='survived', hue='class', data=titanic)
+sns.barplot(x='sex', y='survived', hue='class', dodge=False, data=titanic)
+
+#------------------------------------------------
+# seaborn으로 데이터 시각화 실습
+import pandas as pd
+import matplotlib as plt
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+titanic = sns.load_dataset("titanic")
+
+sns.boxplot(x='alive', y='age', data=titanic)
+sns.violinplot(x='alive', y='age', data=titanic)
+
+# 조인트 그래프 - 커럴 밀집 그래프
+## 산점도와 히스토그램을 합침
+sns.jointplot(x='fare', y='age', data=titanic)
+sns.jointplot(x='fare', y='age', kind='kde', data=titanic)
+    # colab에서 모르는 부분 드래그하고 shift + tab 쳐서 설명 보자
+

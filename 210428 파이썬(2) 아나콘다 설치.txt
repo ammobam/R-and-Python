@@ -1,0 +1,21 @@
+# 아나콘다 설치
+'''
+설치시 PATH 체크
+'''
+
+# 아나콘다 네비게이터
+## 설치된 프로그램은 Launch, 설치안된 프로그램은 install 뜸
+
+# 주피터 노트북 -> 주피터 랩 -> Colab
+## 마크다운 작성
+## 아나콘다 Power Shell에서 [jupyter lab] 타이핑해서 접근 가능
+
+# Spyder
+# 무료. 아나콘다와 호환이 잘 됨. 오류 잘 안 남.
+# 오른쪽 아래 conda: base() 가상환경 버전 확인
+## View> Lock풀고 창 구성
+## Tool> Preference> 테마, 단축키, 자동완성 바꾸기
+    # 자동완성: Completion... > Show automatic.. > 2
+
+# 실행시 ipdb 뜨는 건 디버그 중이란 뜻
+    ## 정지 아이콘 눌러주자

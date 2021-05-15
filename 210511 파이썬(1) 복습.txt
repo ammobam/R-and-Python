@@ -1,0 +1,80 @@
+# p291
+# 더미변수 : 임의의 수 1,0을 부여하는 함수
+
+import pandas as pd
+import numpy as np
+
+#-------------------------------------
+# 결측치에 NA값 넣기
+# p271
+from numpy import nan as NA
+
+# 표준정규분포에서 7행 3열로 DataFrame 만들기
+df = pd.DataFrame(np.random.randn(7,3))
+
+# df의 열 인덱스 이름을 a,b,c로 변경하기
+df.columns = ['a','b','c']
+df.columns = {'a','b','c'}
+    # Index(['a', 'c', 'b'], dtype='object')
+    # 순서 랜덤
+df.columns = ('a','b','c')
+
+# df의 c열 4개, a열 2개를 NA라고 표시하기
+df.iloc[:2,2] = NA
+df.iloc[:4,0] = NA  # c열 [,0]
+
+# NA 지우기
+df.dropna()
+
+# NA를 0으로 채우기
+df.fillna(0)
+
+# NA를 전체값의 평균으로 채우기
+df.fillna(df.mean().mean())
+    # mean(df)  # python
+    # pd.mean(df)   # pandas
+    # df.mean()     # pandas    # 각 열의 평균값이 나옴
+        # df.mean().mean()      # 각 열의 평균의 평균은 전체의 평균
+    # np.mean(df)   # numpy
+
+
+# 딕셔너리로 df 만들기
+df = pd.DataFrame({'k1':['one','two']*3,'k2':[1,1,2,2,3,3]})
+    # dict 타입으로 넣을 때 ":" 주의! ( = 아님)
+
+# 열 이름 바꾸기
+df.rename(columns={'k1':'K1'})
+df.duplicated()
+
+# 각 열의 요소 개수 세기
+df['k2'].value_counts()
+    # value_counts()는 df전체에 쓰면 값 해석이 난해함. 열에 쓰자.
+    # pd.crosstab(df.k1, df.k2)
+
+# 1부터 100까지 중에서 50개의 자연수 뽑기
+np.random.seed(1234)
+np.random.randint(1,101,50)
+num = np.random.randint(1,101,size = 50)
+    # 3번째 자리는 size
+
+# 4조각 내기
+pd.cut(num,4)   # 등간격
+                # Categories (4, interval[float64]): [(1.903, 26.25] < (26.25, 50.5] < (50.5, 74.75] < (74.75, 99.0]]
+                # 4조각, 가장 큰 값은 99.0
+pd.qcut(num,4)  # 동일개수
+
+# 각 카테고리 개수 세기
+pd.cut(num,4).value_counts()
+
+# 각 구간의 요소개수가 같게 5조각 내기
+pd.qcut(num,5)
+pd.qcut(num,5).value_counts()
+    '''
+    (1.999, 16.0]    11
+    (16.0, 32.8]      9
+    (32.8, 63.2]     10
+    (63.2, 80.2]     10
+    (80.2, 99.0]     10
+     # 왜 11, 9개가 들어갔을까?
+     # sorted(num)로 확인해보면 경계선인 16이 2개라 어느 한 구간으로 편입됨
+    '''

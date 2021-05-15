@@ -1,0 +1,130 @@
+# Numpy
+# Numerical Python
+'''
+# PPT 참고
+# 다차원 배열 연산 라이브러리
+# 선형대수학, 푸리에 변환, 난수
+
+# C, C#, 포트란 코드 통합 기구
+# 메모리 저장구조가 다름
+# 정교한 브로드캐스트/벡터라이즈 기능
+# 반복문x 배열을 통해 바로 계산하여 빠름
+
+# Sci Py 라이브러리는 Numpy 베이스로 작동함
+# Numpy 사이트에서 퀵스타트, 비기너 페이지 공부
+
+## 콘솔 명령어 : conda
+## 아나콘다 환경에 적합한지 판단 후 설치
+## 시간도 좀 걸리고 안 맞는 경우 설치 오류
+'''
+#-----------------
+# Numpy의 함수
+
+import numpy as np
+a = [0,1,2,3]
+b = [0,1,2,3.88]
+# 리스트를 array로 변환해줌
+# 입력값으로 list가 들어간다
+a = np.array(a)
+b = np.array(b)
+type(a) # numpy.ndarray
+
+# 동일한 데이터타입(int, float의 bit 다름)이 입력되어야 한다
+a.dtype     # dtype('int32')  32bit씩 연산 중
+            # 8bit = 1byte. 4byte씩 연산 중
+b.dtype     # dtype('float64')
+
+a.ndim
+a.shape     # (4, ) 4행
+a.size
+a.nbytes
+a.itemsize
+
+#-----------------
+# Numpy와 Python가 갖는 데이터타입
+np.array([1,2,3.3,4.8], dtype = int)
+np.array([1,2,3.3,4.8], dtype = float)
+
+np.array([1,2,3.3,4.8], dtype = np.float32)
+    # float32는 np의 데이터타입이므로 적용시 np.float32라고 적어준다
+    # int8은 8칸 중 1칸은 +,-에 쓰고 2^7칸의 연산을 함
+    # 그래서 -128 to 127 숫자 표현 가능
+    # unit8은 unsigned integral. +,-를 쓰지 않으니 2^8칸의 연산을 함
+    # 0 ~ 255까지의 숫자 표현 가능
+
+#-----------------
+# 2차원 배열 만들기
+import numpy as np
+a = np.array([[1,2],[3,4]])
+a.shape     #(2,2) 2행 2열
+
+b = np.array([[1,2,3],[3,4,5]])
+b.shape     #(2,3) 2행 3열
+
+# 3차원 배열 만들기( , , )
+    # 왼손 엄지(x), 검지(y), 중지(z)
+a = np.array([[[1,2],["x","y"]], [[10,20],["a","b"]]])
+a.shape     #(2,2,2) 3차원
+
+a = np.array([[[1,2,3],["x","y","z"]], [[10,20,30],["a","b","c"]]])
+a.shape     #(2,2,3) 3차원
+    '''
+    array([[['1', '2', '3'],        # 첫번째 장
+            ['x', 'y', 'z']],
+    
+           [['10', '20', '30'],     # 두번째 장
+            ['a', 'b', 'c']]], dtype='<U11')
+    '''
+
+#-----------------
+# 행렬에 숫자 범주 채우기 np.arange
+np.arange(10)   # A(에이)레인지. arrange와 관계 없음.
+np.arange(10).shape # (10,) 1차원
+
+a.reshape(2,6)
+    '''
+    array([['1', '2', '3', 'x', 'y', 'z'],
+           ['10', '20', '30', 'a', 'b', 'c']], dtype='<U11')
+    '''
+np.arange(10).reshape(5,2)
+
+np.arange(1,13).reshape(3,4)
+    # 1부터 12까지 3x4인 배열 만들기
+n = np.arange(1,9)
+n.reshape(2,4)
+
+n = np.arange(0,36)
+n.reshape(3,4,3)
+
+
+
+# Numpy에서 리스트 연산
+a = np.arange(1,5)
+b = np.arange(5,9)
+a+b     # array([ 6,  8, 10, 12])
+a*b     # array([ 5, 12, 21, 32])
+a**b    # array([    1,    64,  2187, 65536], dtype=int32)
+a*7     # array([ 7, 14, 21, 28])
+    ## element wise 원소끼리 연산
+a+1     # array([2, 3, 4, 5])
+    ## broadcasting 자동으로 shape 맞춰줌
+    ## 1은 int라 리스트 연산을 위해 [1,1,1,1]로 맞춰준 것
+
+# 배열끼리 곱하면 각 원소끼리 곱해짐. 행렬연산이 아님
+arr1 = np.arange(1,5).reshape(2,2)
+arr2 = np.arange(5,9).reshape(2,2)
+arr1 * arr2
+'''
+array([[ 5, 12],
+       [21, 32]])
+'''
+# 행렬의 곱셈 (방법 3가지)
+arr1@arr2
+np.matmul(arr1,arr2)
+np.dot(arr1,arr2)   # dot은 내적곱을 뜻함
+
+c = np.arange(5,9).reshape(2,2)
+c = np.arange(0,36).reshape(3,4,3)
+
+
+

@@ -1,0 +1,59 @@
+#데이터 프레임 합치기
+
+#left_join()
+#예제1
+test1 <- data.frame(id=c(1,2,3,4,5),
+                    midterm=c(67,80,70,90,85))
+test2 <- data.frame(id=c(1,2,3,4,5),
+                    final=c(70,83,65,95,80))
+
+left_join(test1, test2, by="id")
+  ## by="id". id를 기준으로 합친다
+
+#예제2
+library(readxl)
+exam <- read_excel("excel_exam.xlsx")
+
+name <- data.frame(class=c(1,2,3,4,5),
+                   teacher=c("kim", "lee", "park", "choi", "jung"))
+
+exam_new <- left_join(exam, name, by="class")
+
+#열 합치기cbind, 행 합치기rbind
+cbind(test1, test2)
+rbind(test1, test2)
+#bind_rows( 데이터프레임 )
+bind_rows(test1, test2)
+
+
+#데이터 정제할 때 결측치(NA)
+#NA와 null의 차이?
+#NA - 있어야 할 값이 없다 / null - 빈 공간이다
+  ## https://knight76.tistory.com/entry/R%EC%9D%98-NULL%EA%B3%BC-NA-%EB%B9%84%EA%B5%90
+df <- data.frame(sex=c("M","F",NA,"M","F"),
+                 score=c(5,4,3,4,NA))
+#결측치 확인 함수
+#is.na(데이터프레임)
+is.na(df)
+is.na(df$sex)
+
+table(is.na(df)) #보기 편하다
+sum(is.na(df)) #false=2라서 2가 나온 것 #true 2개라 나온 것 아님
+
+mean(df$score) #NA가 있어서 연산 안 함
+mean(df$score, na.rm=T) #NA값과 칸을 제하고 평균 냄
+
+#NA 없는 데이터 추출?
+df %>% filter(is.na(score)) 
+  ##score열이 na값인 것만 고름
+df_nomiss <- df %>% filter(!is.na(score))
+  ##score열이 na값이 아닌(!) 것만 고름
+df[!is.na(df)]
+df_nomiss <- df %>% filter(!is.na(score)&!is.na(sex))
+##모든 변수에 결측치 없는 데이터 추출방법
+na.omit(df)
+  ##행렬이 클수록 NA값 지우면 손실되는 행,열 데이터가 큼
+  ##na.omit은 큰 데이터프레임에는 쓰지 말자.
+
+
+

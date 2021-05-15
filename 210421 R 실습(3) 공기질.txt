@@ -1,0 +1,44 @@
+#실습(공기질)
+airquality
+
+##행렬 수 알아보기(행:변수 6개, 열:관측치 153개)
+dim(airquality)
+str(airquality)
+unique(airquality[1,]) #열이름 알아내기
+unique(airquality$ozone)
+ncol(airquality)
+
+#변수 각각에 대한 요약 통계량!
+summary(airquality)
+
+#오존>32, 바람 <9인 날은 모두 며칠?
+airquality %>% 
+  filter(Ozone>32) %>% filter(Wind<9)
+
+#오존, 바람, 온도, 월 4개 열을 골라 온도>80이상인 데이터를 뽑아 오존의 내림차순으로 정렬해 6행만 보여주기
+airquality %>% 
+  select(Ozone, Wind, Temp, Month) %>% 
+  filter(Temp>80) %>% 
+  arrange(desc(Ozone)) %>% 
+  head(6)
+
+#위 4개 열 골라서 월별 평균 바람속도 구하기
+airquality %>% 
+  select(Ozone, Wind, Temp, Month) %>% 
+  group_by(Month) %>% 
+  summarise(평균바람속도=mean(Wind))
+  ##summarise 대신 mutate 쓰면?
+  ##mutate는 열을 생성하는 함수. 열 내부 평균 구할 수 없음
+
+#바람>10인 데이터 중 월별 평균온도
+airquality %>% 
+  filter(Wind>10) %>% 
+  group_by(Month) %>% 
+  summarise(평균온도=mean(Temp))
+
+#데이터셋 편집저장 후 삭제하면?
+airquality <- airquality %>% select(Ozone)
+airquality %>% head()
+rm(airquality)
+##데이터셋 원본이 뜬다. 
+

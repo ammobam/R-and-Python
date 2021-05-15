@@ -1,0 +1,40 @@
+dplyr 디플라이어
+
+install.packages("dplyr")
+library(dplyr)
+exam<-df_exam
+
+#filter - 행의 개수 줄어듬
+#select - 열의 개수 줄어듬
+
+filter(exam, class==3)
+
+# %>% 파이프 [ctrl + shift + m]
+## 문장이 끝나기 전에 엔터 쳐야 한 문장으로 인식됨
+exam %>% 
+  filter(class==3) %>% 
+  filter(english > 90)
+
+exam %>% 
+  filter(math>50) %>% 
+  filter(english>40) %>% 
+  filter(class==2) %>% 
+  nrow()
+  ##nrow()는 행 개수 세어 줌
+
+#---------------------------
+
+
+exam %>% select(math, english, science)
+exam %>% select(-math)
+
+exam %>% select(-math, -english)
+exam %>% select(-c(math, english))
+  ##묶을 때는 꼭! combine으로
+
+#다음 연산 순서가 다른 두 문장의 결과는 같을까?
+exam %>%  filter(class==1) %>%  select(english)
+exam %>%  select(english) %>% filter(class==1)
+  ##두번째 코드에서 class는 삭제된 다음 ==1 여부 물음. 오류.
+exam %>%  select(class,english) %>% filter(class==1)
+  ##수정해본 결과. 앞으로 행과 열 삭제 순서 유의하자.

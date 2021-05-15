@@ -1,0 +1,21 @@
+# 복습
+import pandas as pd
+from datetime import datetime
+
+# 2010-1-1부터 20일간의 타임스탬프 만들기
+dates = pd.date_range('1/1/2010', periods = 20)
+
+# datetime 객체로 지금 시간은?
+today = datetime.now()
+x_mas = datetime(2021,12,25)
+    # datetime 안에 인자 "," 반점 구분하기
+x_mas - today
+    # datetime.timedelta(days=225, seconds=52493, microseconds=973487)
+
+# string을 datetime 객체로 바꾸기
+from datetime import timedelta
+string = "2010-11-22"
+datetime.strptime(string, "%Y-%m-%d")
+
+
+

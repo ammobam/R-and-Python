@@ -1,0 +1,98 @@
+ggplot2 그래픽 패키지
+
+tidyvers 패키지 6개를 묶은 패키지를 다운로드
+
+책 Grammer of Graphic
+https://ggplot2.tidyverse.org/
+메뉴> Help> cheatsheets> 모르는것다운로드
+
+http://www.ggplot2-exts.org/gallery/
+http://plot.ly/r/
+  마우스와 인터랙티브한 그래프 만들어주는 사이트
+D3.js
+
+#legend() 범례 함수
+#------------------------------------
+
+
+library(ggplot2)
+
+#1.평면 세팅
+#ggplot(data =, mapping=aes(x=, y=))
+ggplot(data =mpg, mapping =aes(x=displ, y=hwy, color=cyl))+
+  geom_point()
+
+#색깔 이름
+colnames(mpg)
+rownames(mpg)
+names(mpg)   #colnames 보여줌
+##drv는 색 개수가 정해져 있어서 범주 많을 땐 cty씀
+
+#point 크기 키우기
+ggplot(data =mpg, mapping =aes(x=displ, y=hwy, color=drv))+
+  geom_point(size=3)
+
+str(mpg)
+detach("package:dplyr", unload=TRUE)
+#dplyr를 코드 한 줄에서만 필요로 할 때
+dplyr::glimpse(mpg)
+dplyr::glimpse(mpg)
+dplyr::glimpse(diamonds)
+
+#drv <-f:front /r:rear /4:4륜구동
+
+#class개수
+nrow(mpg)
+ncol(mpg)
+unique(mpg$class)
+table(mpg$class)
+
+ggplot(data <- mpg, aes(x=displ, y=hwy, color=cty))+
+  geom_point(size=2)
+
+#------------------------------------
+#같은 문장 줄여 쓰기
+ggplot(data <- mpg, aes(x=displ, y=hwy, color=cty))+
+  geom_point()
+#이렇게
+ggplot(mpg, aes(displ, hwy, color=cty))+
+  geom_point()
+
+#범주..?
+ggplot(mpg, aes(x=drv, y= class))+
+  geom_point()
+
+#plot 바꿔보기
+ggplot(mpg, aes(displ, hwy, color=cty))+
+  geom_boxplot()
+
+ggplot(mpg, aes(x=drv, y= hwy))+
+  geom_boxplot()
+
+#변수 개수 바꿔보자
+ggplot(mpg, aes(x=drv))+
+  geom_bar()
+
+ggplot(mpg, aes(x=cty))+
+  geom_bar()
+
+#컬러 바꾸는 방법
+  ##color는 테두리
+ggplot(mpg, aes(x=drv, color=drv))+
+  geom_bar()
+  ##fill이 면적
+ggplot(mpg, aes(x=drv, fill=drv))+
+  geom_bar()
+
+#변수 개수와 범주에 따라 그릴 수 있는 그래프 달라짐
+ggplot(mpg, aes(x=drv, y= hwy, fill=drv))+
+  geom_boxplot()
+  
+ggplot(mpg, aes(x=drv, y= hwy, fill=drv))+
+  geom_violin()
+
+##변수1개 bar(),변수 2개 col() 사용
+ggplot(mpg, aes(x=drv, y= hwy, fill=drv))+
+  geom_col()
+
+

@@ -1,0 +1,257 @@
+# p83
+'''
+'이터레이터'를 반환한다
+=> 반복해서 값을 내는 '기계'를 만든다
+'''
+sum = 0
+for i in range(10000):
+    if i % 3 == 0 or i % 5 == 0:
+        sum += i
+print(sum)
+
+message="success" if score >=60 else "failure"
+
+#--------------------------------------
+# Chapter 3: 내장자료구조, 함수, 파일
+# 튜플
+## A tuple is a fixed-length, immutable sequence of Python objects.
+
+tup = 4,5,6; tup
+nested_tup = 4,5,6,(7,8);nested_tup
+tuple([4,0,2])
+tuple("Tasty lunch")
+tuple(range(4))
+tup[0]="new value?"
+    # TypeError: 'tuple' object does not support item assignment
+
+tup = tuple(['foo', [1,2], True])
+tup[1].append(3)
+    # If an object inside a tuple is mutable, such as a list, you can modify it in-place:
+    # = 튜플 내에 저장된 객체가 mutable하다면 그 위치에서 변경 가능하다 p89 / p52
+
+a, b, c = 4, 5, 6
+b
+
+a, b, b = 6, 5, 4
+b
+
+x,y = 1, (2,3)
+a, b = b, a
+def fe:
+
+   
+# 리스트
+# p92 / 원서 p54
+'''
+Checking whether a list contains a value is a lot slower than doing so with dicts and
+sets (to be introduced shortly), as Python makes a linear scan across the values of the
+list, whereas it can check the others (based on hash tables) in constant time.
+'''
+x = [4, None, 1]
+x.append(4)
+x.append((4,5))
+    # append일 때 형식 (), [] 통째로 추가됨
+x.append([4,5])
+x.extend([4])
+    # int형은 추가 안 됨. list형으로 묶은 값을 넣으면 풀어서 값만 추가됨.
+x.extend([4,5,6])   # 원소만
+x.extend((4,5,6))   # 원소만
+x.extend([[4,5,6]])
+    # 이중 리스트로 넣어야 리스트 째로 추가됨
+'''
+p94 / 원서 p56
+Note that list concatenation by addition is a comparatively expensive operation.
+Since a new list must be created and the objects copied over.
+Using "extend" to append elements to an existing list is usually preferable.
+
+큰 리스트일수록 연산속도에서 extend가 빠르다.
+'''
+
+# 이진탐색과 정렬된 리스트 유지하기
+# p96 / 원서 p57
+import bisect
+c = [1,2,2,2,3,4,7]
+bisect.bisect(c, 2) # 4
+    # 리스트 c에 2를 넣을 때 들어갈 공간의 위치?
+    # c[4] 자리
+bisect.bisect(c, 5) # 7
+bisect.insort(c, 5)
+    # c[7] 자리에 5가 들어간 것을 볼 수 있다
+f = [7,1,4,2,3]
+bisect.bisect(f, 2)
+    # 정렬 안 된 리스트에서도 오류없이 실행됨. 주의 필요.
+
+# 슬라이싱
+# p97 / 원서 p58
+f = [7,1,4,2,3]
+f[1]=[0,0]
+    # Out[197]: [7, [0, 0], 4, 2, 3]
+f[1:2]=[0,0]
+    # Out[191]: [7, 0, 0, 4, 2, 3]
+    # f[2]나 f[1:2]나 같은 위치를 가리키지만, 리스트를 넣을 때 들어가는 형식이 다르다
+
+
+# enumerate를 이용해서 딕셔너리 만들기
+# p98
+s = ['foo', 'bar', 'baz']
+mapping = {}
+for i, v in enumerate(s):
+    mapping[v] = i
+mapping 
+    # enumerate(list)는 list를 키로 만들고 값 공백을 만듬
+
+# zip
+# p100 / op60
+s1 = ['foo', 'bar', 'baz']
+s2 = ['one', 'two', 'three']
+zipped = zip(s1, s2)
+list(zipped)
+    # Out[209]: [('foo', 'one'), ('bar', 'two'), ('baz', 'three')]
+
+for i, (a,b) in enumerate(zip(s1, s2)):
+    print(f"{i}: {a}, {b}")
+    '''
+    0: foo, one
+    1: bar, two
+    2: baz, three
+    '''
+    # zip의 입력값으로 tuple
+
+#--------------------------------------
+# 딕셔너리
+# p101 op61
+
+s = ['foo', 'bar', 'baz']
+mapping = {}
+for i, v in enumerate(s):
+    mapping[v] = i
+mapping 
+
+# ln[114]
+ret = s.pop(1)
+ret
+    # dict에서 pop함수를 쓰면 키의 값을 리턴. 값만 변수에 저장 가능.
+
+# 순차 자료형에서 사전 생성하기
+# p103
+mapping = dict(zip(range(5), reversed(range(5))))
+mapping
+
+# p105 op64
+# 딕셔너리의 키는 해시 가능한 객체만 가능하다
+# The technical term here is hashability.
+hash('string')
+    # Out[235]: -7745253245831756626
+hash([1,2,3])
+    # TypeError: unhashable type: 'list'
+
+# set 집합
+# p106 op65
+
+a = set([1,2,3])
+b = {2,3,4}
+
+a & b   # 교집합
+a.intersection(b)
+a &= b  # 교집합을 a에 대입
+a
+
+a | b   # 합집합
+a.union(b)
+a |= b
+a
+
+# List, Set, and Dict Comprehensions
+# p109 op67
+'''
+(), {:}, {}, []
+'''
+strings = ['a', 'as', 'bat', 'car', 'dove', 'python']
+
+[x.upper() for x in strings if len(x)>2]
+
+uniq_len = [len(x) for x in strings]
+    # [1, 2, 3, 3, 4, 6]
+uniq_len = {len(x) for x in strings}
+    # {1, 2, 3, 4, 6}
+    # 각 x의 len(x)가 1,2,3,3,4,6인데 set {}에 담아서 중복값이 없어진 것
+list(uniq_len)
+
+set(map(len, strings))
+    # map: iterator한 리스트 strings의 각 요소에 len 함수를 적용하여 배열을 만듬
+    # set: 그 배열을 set으로 바꾸면서 요소의 중복 제거
+
+loc_map = {val: index for index, val in enumerate(strings)}
+loc_map 
+
+
+# 중첩된 리스트 표기법
+# Nested list comprehensions
+# p111 op68
+tups = [(1,2,3),(4,5,6),(7,8,9)]
+[x for tup in tups for x in tup]
+    # [x    for tup in tups    for x in tup]
+    # x를 다음에서 꺼내서 [] 리스트로 만든다
+    # tup은 tups 안에
+    # x는 tup 안에
+    
+# 함수
+# p112 op96
+
+def func():
+    a = []
+    for i in range(5):
+        a.append(i)
+    print(a)
+func()
+a   # NameError: name 'a' is not defined
+    # 함수 내부에서 정의된 a는 네임스페이스가 지역(함수내부)
+
+a = []
+def func2():
+    for i in range(5):
+        a.append(i)
+    print(a)
+func2()
+a    # 밖에서 선언하면 a의 네임스페이스는 전역
+
+
+def f():
+    a = 5
+    b = 6
+    c = 7
+    return a, b, c
+a, b, c = f()
+
+
+#--------------------------------------
+# Functions Are Objects
+# p116 op72
+# 문자 데이터 노이즈 제거하기
+states = [' Alabama ', 'Georgia!', 'Georgia', 'georgia', 'FlOrIda','south carolina##', 'West virginia?']
+
+import re
+    # re는 정규표현
+def clean_strings(strings):
+    result = []
+    for value in strings:
+        value = value.strip()
+        value = re.sub('[!@#$%^&*(?0]', '', value)
+            # re.sub('교체대상패턴', '교체할값', 대상)
+            # 정규표현식에서 [] 내부는 모두 or로 읽힘
+            # '[!@#$%^&*(?0]'은 '! or @ or # or $....0'
+            # [a-z] : a부터 z까지 모두!
+            # [ㄱ-ㅎ], [0-9], [a-z], [A-Z] 다 된다
+        value = value.title()
+            # title()은 첫글자 대문자, 그외 소문자 변환
+        result.append(value)        
+    return result
+clean_strings(states)
+#--------------------------------------
+# lambda는 함수 이름 짓기 귀찮을 때 주로 씀
+strings = ['foo', 'card', 'bar', 'aaaa', 'abab']
+strings.sort(key=lambda x: len(set(list(x))))
+    # key는 문자열의 길이가 되고
+strings
+    #['aaaa', 'foo', 'abab', 'bar', 'card']
+

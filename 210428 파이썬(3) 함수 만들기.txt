@@ -1,0 +1,92 @@
+# 함수 def()
+# p150
+'''
+def 함수이름 (요소, ...):
+    실행할 내용
+'''
+
+def add_p(a,b):
+    print(a+b)
+def add_r(a,b):
+    return(a+b)
+    # return은 return 뒤에 오는 것의 현재값을 저장하고, 함수를 종료함
+    # return 뒤에 아무 값이 없다면 저장할 것 없이 함수를 종료함
+
+# return()
+p = add_p(1,2)
+r = add_r(3,4)
+
+print(p)    # None
+    ## print는 보여주고 끝
+print(r)    # 7
+    ## return은 값을 저장했
+
+
+# 매개변수 지정하여 호출하기 (p156)
+## 디폴트가 있을 때 호출하기
+def ad(a,b=3):
+    return a+b
+print(ad(7))
+    ## 디폴트값을 뒤에 지정할 경우, 실행됨
+# def ad(a=3,b):
+#     return a+b
+# print(ad(,7))
+    ## 디폴트값을 앞에 지정할 경우, 구문오류
+
+def ad(*a):
+    result = 0
+    for i in a:
+        result += i
+    return result
+print(ad(3,7,78,9,8))
+    ## 매개변수 여러 개
+
+#%%-------------------------------------
+
+# 매개변수 여러 개인 함수 테스트
+
+qq= print(range(5))
+qq1= print(list(range(5,10)))
+
+def moduhap(*a):
+    sum = 0
+    aaa = list(range(*a))
+        ## list함수 없이 range(*a)로 해도 실행
+    for i in aaa:
+        sum = sum + i
+    print(sum)
+moduhap(1,99,2)
+
+# 위 함수는 매개변수 a가 range에 들어가기 때문에 a를 3개 까지 입력할 수 있다
+## 만약 range(0,a)로 주면,
+## 앞의 값에 디폴트 값을 부여하면서 튜플로 인식되어 구문 오류가 난다
+## TypeError: 'tuple' object cannot be interpreted as an integer
+
+#%%-------------------------------------
+# return의 위치
+def make_list(n):
+    list_b = []
+    for i in range(n+1):
+        list_b.append(i)
+    return list_b
+    ## return 위치 잘 맞추자. for문 밖에서 저장해야함.
+print(make_list(7))
+
+# return이 for문 안에 들어가면?
+def make_list(n):
+    list_b = []
+    for i in range(n+1):
+        list_b.append(i)
+        return list_b
+    # return은 함수를 종료시키기 때문에
+    # range의 시작값인 i=0에서만 값을 저장하고 끝남.
+    # 이 경우 print(make_list)의 값은 [0]
+
+#%%-------------------------------------
+# 매개변수가 딕셔너리 (**)
+# p159
+def treeimg(**tree):
+    print(tree)
+
+treeimg(aa=12)
+    ## {'aa': 12}

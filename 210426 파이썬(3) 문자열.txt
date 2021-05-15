@@ -1,0 +1,86 @@
+# 문자열 다루기 (p67)
+# 변수, 정확히는 객체.
+# 객체마다 속성/움직임이 있음.
+# str이란 객체는 문자형/덧셈 가능, 곱셈 불가능. 
+# 함수, 메서드 : 동적임
+
+#----------------------
+#(p68)str 객체에 쓰는 함수들
+
+a = "hobby"
+type(a)
+count(a)    # help(a.count)
+a.count('b')    # a 안에 'b'가 몇 개 있지?
+
+a = "Python is best choice"
+
+a.find("b") # a 안에서 b의 위치는?
+print(a[10])
+a.find("k") # 없음. -1
+"Python is best choice".find("i")
+
+a.index("y") # a 안에서 y의 위치는?
+a.index("i") # 첫번째 i 위치만 출력
+a.index("K") # 없음. 오류남.
+
+", ".join('abcd')    # a,b,c,d
+    type(", ".join('abcd')) #str
+", ".join(["a", "b", "c", "d"]) # 리스트
+
+a.upper()
+a.lower()
+
+b = "   hi   "
+b.strip()
+    # <built-in method strip of str object....
+    # 함수 뒤에 ()괄호 붙이면 해결
+b.lstrip()
+b.rstrip()
+
+c = "Life is short"
+c.replace("Life", "Pooh's leg")
+c.split()   #디폴트로 공백을 기준으로 쪼개서 리스트 만든다
+
+d = "dmdkdkdk"
+d = ":".join(d)
+d.split(":")    #:를 기준으로 쪼개서 리스트 만든다
+
+input("변수 두 개를 한 번에 받을 수 있을까? a: b:")
+    # a, b = input("변수 두 개를 한 번에 받을 수 있을까? a: b:") #에러!
+a, b = input("변수 두 개를 한 번에 받을 수 있을까? a: b:").split(",")
+    # 입력할 때 aaaaaaaaaaaaaaaa,ffffffffffffff 이런 식으로 입력
+
+
+#----------------------
+
+#문자열 a에 쓸 수 있는 함수 목록을 보자
+dir(a)
+
+#숫자열은?
+n = 1
+dir(n)
+    #__ 언더바 빠진 함수를 주로 씀
+
+#----------------------
+#boolean형
+#(p102)
+
+a = True
+type(a)
+
+#데이터 타입 바꿔주는 함수
+int()
+str()
+bool()
+
+#결측치는 False (p103)
+bool(0) #False 
+bool(None)  #False #결측치
+bool(1) #True
+bool(2) #True
+
+#----------------------
+
+
+
+
